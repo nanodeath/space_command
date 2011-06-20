@@ -1,12 +1,16 @@
 package com.wasome.space_command;
 
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
+import org.newdawn.fizzy.World;
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.BasicGame;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.springframework.context.support.AbstractXmlApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
@@ -23,6 +27,8 @@ public final class SpaceCommandGame extends BasicGame {
 	private static GameContainer gameContainer;
 	private static int msDelta;
 	private static Graphics graphics;
+	private static Input input;
+	private static World world;
 
 	private final Set<WorldUpdatable> updatableThings = new HashSet<WorldUpdatable>();
 	private final Set<WorldRenderable> renderableThings = new HashSet<WorldRenderable>();
@@ -31,40 +37,55 @@ public final class SpaceCommandGame extends BasicGame {
 		super("Game");
 	}
 	
-	public static GameContainer getGameContainer(){
+	public static final GameContainer getGameContainer(){
 		if(!updating && !rendering){
 			throw new ConstructNotAvailableException(); 
 		}
 		return gameContainer;
 	}
-	public static int getTimeDelta(){
+	public static final int getTimeDelta(){
 		if(!updating){
 			throw new ConstructNotAvailableException();
 		}
 		return msDelta;
 	}
-	public static Graphics getGraphics(){
+	public static final Graphics getGraphics(){
 		if(!rendering){
 			throw new ConstructNotAvailableException();
 		}
 		return graphics;
 	}
+	public static final Input getInput(){
+		if(!updating){
+			throw new ConstructNotAvailableException();
+		}
+		return input;
+	}
+	public static final World getWorld(){
+		return world;
+	}
+	
+	private List<Ship> ships = new LinkedList<Ship>();
 
 	@Override
 	public void init(GameContainer arg0) throws SlickException {
-		// TODO Auto-generated method stub
-
+		world = new World(0f);
+		Ship mainShip = spring.getBean(BasicShip.class);
+		ships.add(mainShip);
+		updatableThings.add(mainShip);
+		renderableThings.add(mainShip);
 	}
 
 	@Override
 	public void update(GameContainer gc, int msDelta) throws SlickException {
 		gameContainer = gc;
 		SpaceCommandGame.msDelta = msDelta;
-		
+		SpaceCommandGame.input = gameContainer.getInput();
 		updating = true;
 		for(WorldUpdatable thing : updatableThings){
 			thing.update();
 		}
+		world.update(((float)msDelta) / 1000f);
 		updating = false;
 	}
 
