@@ -29,7 +29,7 @@ public class BasicShip extends Ship {
 		super();
 		size = new Point<Float>(1f, 1f);
 		Shape shape = new Rectangle(size.x, size.y);
-		body = new DynamicBody(shape, 10f, 10f);
+		body = new DynamicBody(shape, 20f, 25f);
 		body.setAngularDamping(0.5f);
 
 		SpaceCommandGame.getWorld().add(body);

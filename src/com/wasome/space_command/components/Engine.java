@@ -4,11 +4,11 @@ import static com.wasome.space_command.util.PointUtil.rotateAbout;
 
 import org.jbox2d.common.Vec2;
 
-import com.wasome.space_command.Component;
+import com.wasome.space_command.ShipComponent;
 import com.wasome.space_command.WorldElement;
 import com.wasome.space_command.data.Point;
 
-public abstract class Engine extends Component implements WorldElement {
+public abstract class Engine extends ShipComponent implements WorldElement {
 	protected float maximumThrust;
 	// 0.0f-1.0f
 	protected float currentThrustPercent = 0f;

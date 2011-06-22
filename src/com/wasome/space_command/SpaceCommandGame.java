@@ -74,6 +74,11 @@ public final class SpaceCommandGame extends BasicGame {
 		ships.add(mainShip);
 		updatableThings.add(mainShip);
 		renderableThings.add(mainShip);
+		
+		Ship mothership = spring.getBean(CatMothership.class);
+		ships.add(mothership);
+		updatableThings.add(mothership);
+		renderableThings.add(mothership);
 	}
 
 	@Override

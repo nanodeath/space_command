@@ -15,7 +15,7 @@ import com.wasome.space_command.flight_plan.FlightPlan;
 import com.wasome.space_command.util.CollectionUtil;
 
 public abstract class Ship implements WorldElement {
-	protected List<Component> allComponents = new ArrayList<Component>();
+	protected List<ShipComponent> allComponents = new ArrayList<ShipComponent>();
 	protected List<WorldRenderable> visibleComponents = new ArrayList<WorldRenderable>();
 	protected float orientation;
 	protected FlightPlan flightPlan;
@@ -24,7 +24,7 @@ public abstract class Ship implements WorldElement {
 	protected Point<Float> size;
 
 	public void updateComponents() {
-		for (Component component : allComponents) {
+		for (ShipComponent component : allComponents) {
 			component.update();
 		}
 	}
@@ -35,7 +35,7 @@ public abstract class Ship implements WorldElement {
 		}
 	}
 
-	public void addComponent(Component c) {
+	public void addComponent(ShipComponent c) {
 		c.setShip(this);
 		allComponents.add(c);
 		if (c instanceof WorldRenderable) {
@@ -145,7 +145,7 @@ public abstract class Ship implements WorldElement {
 
 	public List<Engine> getEngineComponents() {
 		List<Engine> engines = new LinkedList<Engine>();
-		for (Component component : allComponents) {
+		for (ShipComponent component : allComponents) {
 			if (component instanceof Engine) {
 				engines.add((Engine) component);
 			}
