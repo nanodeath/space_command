@@ -2,7 +2,6 @@ package com.wasome.space_command;
 
 import static com.wasome.space_command.SpaceCommandGame.getInput;
 
-import org.newdawn.fizzy.Circle;
 import org.newdawn.fizzy.DynamicBody;
 import org.newdawn.fizzy.Rectangle;
 import org.newdawn.fizzy.Shape;
@@ -10,14 +9,17 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.wasome.space_command.components.BasicEngine;
 import com.wasome.space_command.components.Engine;
 import com.wasome.space_command.components.Engine.Direction;
 import com.wasome.space_command.data.Point;
+import com.wasome.space_command.util.PointUtil;
 
 @Component
+@Scope("prototype")
 public class BasicShip extends Ship {
 	@Autowired
 	private Camera camera;
@@ -27,8 +29,7 @@ public class BasicShip extends Ship {
 	public BasicShip() throws SlickException {
 		super();
 		size = new Point<Float>(1f, 1f);
-		Shape shape = new Circle(size.x / 2);
-		shape = new Rectangle(size.x, size.y);
+		Shape shape = new Rectangle(size.x, size.y);
 		body = new DynamicBody(shape, 10f, 10f);
 		body.setAngularDamping(0.5f);
 
@@ -38,14 +39,18 @@ public class BasicShip extends Ship {
 
 		// add engines
 		// right engine
-		Engine engine = new BasicEngine(Direction.STERN);
-		engine.setLocalPosition(new Point<Float>(size.x / 2, 0f));
-		addComponent(engine);
+		Engine rightEngine = SpaceCommandGame.spring.getBean(BasicEngine.class);
+		rightEngine.setFacingDirection(Direction.STERN);
+		rightEngine
+				.setLocalPosition(new Point<Float>(size.x / 2f, -size.y / 2));
+		addComponent(rightEngine);
 
 		// left engine
-		engine = new BasicEngine(Direction.STERN);
-		engine.setLocalPosition(new Point<Float>(-size.x / 2, 0f));
-		addComponent(engine);
+		Engine leftEngine = SpaceCommandGame.spring.getBean(BasicEngine.class);
+		leftEngine.setFacingDirection(Direction.STERN);
+		leftEngine
+				.setLocalPosition(new Point<Float>(-size.x / 2f, -size.y / 2));
+		addComponent(leftEngine);
 	}
 
 	private boolean accelerating = false, reversing = false;
@@ -59,7 +64,8 @@ public class BasicShip extends Ship {
 			Input input = getInput();
 			if (input.isKeyDown(Input.KEY_Q)) {
 				if (!input.isKeyDown(Input.KEY_E))
-					turnCounterClockwise();
+					body.setAngularVelocity(-1f);
+				// turnCounterClockwise();
 			} else if (input.isKeyDown(Input.KEY_E)) {
 				// turnClockwise();
 				body.setAngularVelocity(1f);

@@ -13,35 +13,42 @@ public class PointUtilTest {
 
 	@Test
 	public void zeroRotation() {
-		Point<Float> rotated = PointUtil.rotateAbout(center, other, 0);
+		Point<Float> rotated = PointUtil.rotateAbout(center, other, 0, true);
 		assertTrue(withinTolerance(2f, rotated.x, 0.001f));
 		assertTrue(withinTolerance(0f, rotated.y, 0.001f));
 	}
 
 	@Test
 	public void eigthRotation() {
-		Point<Float> rotated = PointUtil.rotateAbout(center, other, MathUtil.PI / 4);
+		Point<Float> rotated = PointUtil.rotateAbout(center, other, MathUtil.PI / 4, true);
 		assertTrue(withinTolerance((float) Math.sqrt(2d) / 2 + 1, rotated.x, 0.001f));
 		assertTrue(withinTolerance((float) Math.sqrt(2d) / 2, rotated.y, 0.001f));
+	}
+	
+	@Test
+	public void eigthRotationCW() {
+		Point<Float> rotated = PointUtil.rotateAbout(center, other, MathUtil.PI / 4, false);
+		assertTrue(withinTolerance((float) Math.sqrt(2d) / 2 + 1, rotated.x, 0.001f));
+		assertTrue(withinTolerance((float) -Math.sqrt(2d) / 2, rotated.y, 0.001f));
 	}
 
 	@Test
 	public void quarterRotation() {
-		Point<Float> rotated = PointUtil.rotateAbout(center, other, MathUtil.HALF_PI);
+		Point<Float> rotated = PointUtil.rotateAbout(center, other, MathUtil.HALF_PI, true);
 		assertTrue(withinTolerance(1f, rotated.x, 0.001f));
 		assertTrue(withinTolerance(1f, rotated.y, 0.001f));
 	}
 
 	@Test
 	public void halfRotation() {
-		Point<Float> rotated = PointUtil.rotateAbout(center, other, MathUtil.PI);
+		Point<Float> rotated = PointUtil.rotateAbout(center, other, MathUtil.PI, true);
 		assertTrue(withinTolerance(0f, rotated.x, 0.001f));
 		assertTrue(withinTolerance(0f, rotated.y, 0.001f));
 	}
 
 	@Test
 	public void threeHalvesRotation() {
-		Point<Float> rotated = PointUtil.rotateAbout(center, other, MathUtil.THREE_HALVES_PI);
+		Point<Float> rotated = PointUtil.rotateAbout(center, other, MathUtil.THREE_HALVES_PI, true);
 		assertTrue(withinTolerance(1f, rotated.x, 0.001f));
 		assertTrue(withinTolerance(-1f, rotated.y, 0.001f));
 	}

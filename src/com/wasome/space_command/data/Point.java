@@ -19,6 +19,8 @@ public final class Point<T> {
 	public static float distanceBetween(Point<Float> pointA, Point<Float> pointB){
 		float a = pointB.x - pointA.x;
 		float b = pointB.y - pointA.y;
-		return (float) Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2));
+		return (float) Math.hypot(a, b);
 	}
+	
+	public static final Point<Float> NULL_FLOAT = new Point<Float>(0f, 0f);
 }

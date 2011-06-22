@@ -57,7 +57,7 @@ public class Camera {
 		Point<Float> size = scaleWorldToScreen(worldW, worldH);
 		// TODO not sure why this +16 is necessary on the 16 size :(
 		// At least it's only in one place, now.
-		return new Point<Float>(point.x - size.x / 2, point.y - size.y / 2 + 16);
+		return new Point<Float>(point.x - size.x / 2, point.y - size.y / 2);
 	}
 
 	/**

@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public final class SpaceCommandGame extends BasicGame {
-	private AbstractXmlApplicationContext spring;
+	public static AbstractXmlApplicationContext spring;
 
 	private static boolean updating;
 
@@ -105,7 +105,7 @@ public final class SpaceCommandGame extends BasicGame {
 		AbstractXmlApplicationContext spring = new FileSystemXmlApplicationContext(
 				"config/space_command.xml");
 		SpaceCommandGame foo = spring.getBean(SpaceCommandGame.class);
-		foo.spring = spring;
+		SpaceCommandGame.spring = spring;
 
 		AppGameContainer app = new AppGameContainer(foo);
 

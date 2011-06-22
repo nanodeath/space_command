@@ -2,8 +2,6 @@ package com.wasome.space_command.components;
 
 import static com.wasome.space_command.util.PointUtil.rotateAbout;
 
-import org.jbox2d.common.Vec2;
-
 import com.wasome.space_command.Component;
 import com.wasome.space_command.WorldElement;
 import com.wasome.space_command.data.Point;
@@ -14,8 +12,9 @@ public abstract class Engine extends Component implements WorldElement {
 	protected float currentThrustPercent = 0f;
 	protected float timeToMaximumThrust = 0f;
 	protected Direction pointingTowards;
-	private Point<Float> localPosition;
-	
+	protected Point<Float> localPosition = Point.NULL_FLOAT;
+	protected Point<Float> force = Point.NULL_FLOAT;
+
 	public static enum Direction {
 		/**
 		 * Forward, front, straight ahead.
@@ -35,11 +34,14 @@ public abstract class Engine extends Component implements WorldElement {
 		STARBOARD;
 
 		/**
-		 * @param d the direction in which the engine is pointed -- the ship will move in the opposite direction.
-		 * @param magnitude the size of the thrust
+		 * @param d
+		 *            the direction in which the engine is pointed -- the ship
+		 *            will move in the opposite direction.
+		 * @param magnitude
+		 *            the size of the thrust
 		 */
-		public static final Point<Float> toForce(Direction d, float magnitude){
-			switch(d){
+		public static final Point<Float> toForce(Direction d, float magnitude) {
+			switch (d) {
 			case BOW:
 				return new Point<Float>(0f, -magnitude);
 			case STERN:
@@ -52,12 +54,15 @@ public abstract class Engine extends Component implements WorldElement {
 			return null;
 		}
 	}
-	
-	public Engine(Direction d){
-		pointingTowards = d;
+
+	public Engine() {
 	}
-	
-	public void setLocalPosition(Point<Float> point){
+
+	public Engine(Direction d) {
+		setFacingDirection(d);
+	}
+
+	public void setLocalPosition(Point<Float> point) {
 		localPosition = point;
 	}
 
@@ -65,35 +70,57 @@ public abstract class Engine extends Component implements WorldElement {
 	public Point<Float> getLocalPosition() {
 		return localPosition;
 	}
-	
-	public Direction getFacingDirection(){
+
+	public void setFacingDirection(Direction d) {
+		pointingTowards = d;
+	}
+
+	public Direction getFacingDirection() {
 		return pointingTowards;
 	}
 
-	@Override
-	public void render() {
-		// TODO Auto-generated method stub
+	/**
+	 * The engine location, in world coordinates
+	 */
+	protected Point<Float> calculateWorldEngineLocation() {
+		Point<Float> worldCenter = new Point<Float>(ship.getBody().getX(), ship
+				.getBody().getY());
+		Point<Float> worldEnginePosition = new Point<Float>(worldCenter.x
+				+ localPosition.x, worldCenter.y + localPosition.y);
+		float rotation = ship.getRotation();
+		Point<Float> rotatedPosition = rotateAbout(worldCenter,
+				worldEnginePosition, rotation, false);
+		return rotatedPosition;
+	}
 
+	protected Point<Float> calculateLocalEngineForce() {
+		Point<Float> localCenter = new Point<Float>(ship.getBody().getLocalX(),
+				ship.getBody().getLocalY());
+		Point<Float> localEngineForce = new Point<Float>(localCenter.x
+				+ force.x, localCenter.y + force.y);
+		Point<Float> rotatedForce = rotateAbout(localCenter, localEngineForce,
+				ship.getRotation(), false);
+		return rotatedForce;
 	}
 
 	@Override
 	public void update() {
-		Point<Float> force = Direction.toForce(pointingTowards, currentThrustPercent * maximumThrust);
-		if(force.x != 0f || force.y != 0f){
-			Point<Float> localCenter = new Point<Float>(ship.getBody().getLocalX(), ship.getBody().getLocalY());
-//			float shipRotation = (float) Math.toRadians(ship.getRotation());
-			float shipRotation = ship.getRotation();
-			Point<Float> rotatedForce = rotateAbout(localCenter, force, shipRotation);
-			Point<Float> rotatedPosition = rotateAbout(localCenter, localPosition, shipRotation);
-			ship.getBody().applyForce(-rotatedForce.x, rotatedForce.y, rotatedPosition.x, rotatedPosition.y, true);			
+		force = Direction.toForce(pointingTowards,
+				currentThrustPercent * maximumThrust);
+		if (force.x != 0f || force.y != 0f) {
+			Point<Float> rotatedPosition = calculateWorldEngineLocation();
+			Point<Float> rotatedForce = calculateLocalEngineForce();
+			ship.getBody().applyForce(rotatedForce.x, rotatedForce.y,
+					rotatedPosition.x, rotatedPosition.y, false);
 		}
 	}
-	
+
 	/**
 	 * 
-	 * @param percent a float between 0 and 1 (1 being 100%)
+	 * @param percent
+	 *            a float between 0 and 1 (1 being 100%)
 	 */
-	public void setOutput(float percent){
+	public void setOutput(float percent) {
 		currentThrustPercent = percent;
 	}
 }
