@@ -98,19 +98,19 @@ public class BasicShip extends Ship {
 			}
 			
 			if(input.isKeyDown(Input.KEY_A)){
-				turnEnginesOnOff(Direction.PORT, Direction.STARBOARD);
-				acceleratingRight = true;
-			} else if(acceleratingRight){
-				turnEnginesOnOff(null, Direction.PORT);
-				acceleratingRight = false;
-			}
-			
-			if(input.isKeyDown(Input.KEY_D)){
 				turnEnginesOnOff(Direction.STARBOARD, Direction.PORT);
 				acceleratingLeft = true;
 			} else if(acceleratingLeft){
 				turnEnginesOnOff(null, Direction.STARBOARD);
 				acceleratingLeft = false;
+			}
+			
+			if(input.isKeyDown(Input.KEY_D)){
+				turnEnginesOnOff(Direction.PORT, Direction.STARBOARD);
+				acceleratingRight = true;
+			} else if(acceleratingRight){
+				turnEnginesOnOff(null, Direction.PORT);
+				acceleratingRight = false;
 			}
 			
 			if (input.isKeyDown(Input.KEY_G)) {
