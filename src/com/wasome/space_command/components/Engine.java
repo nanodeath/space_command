@@ -2,6 +2,8 @@ package com.wasome.space_command.components;
 
 import static com.wasome.space_command.util.PointUtil.rotateAbout;
 
+import org.jbox2d.common.Vec2;
+
 import com.wasome.space_command.Component;
 import com.wasome.space_command.WorldElement;
 import com.wasome.space_command.data.Point;
@@ -87,26 +89,24 @@ public abstract class Engine extends Component implements WorldElement {
 				.getBody().getY());
 		Point<Float> worldEnginePosition = new Point<Float>(worldCenter.x
 				+ localPosition.x, worldCenter.y + localPosition.y);
-		float rotation = ship.getRotation();
 		Point<Float> rotatedPosition = rotateAbout(worldCenter,
-				worldEnginePosition, rotation, false);
+				worldEnginePosition, ship.getRotation(), true);
 		return rotatedPosition;
 	}
 
 	protected Point<Float> calculateLocalEngineForce() {
 		Point<Float> localCenter = new Point<Float>(ship.getBody().getLocalX(),
 				ship.getBody().getLocalY());
-		Point<Float> localEngineForce = new Point<Float>(localCenter.x
-				+ force.x, localCenter.y + force.y);
+		Point<Float> localEngineForce = new Point<Float>(force.x, force.y);
 		Point<Float> rotatedForce = rotateAbout(localCenter, localEngineForce,
-				ship.getRotation(), false);
+				ship.getRotation(), true);
 		return rotatedForce;
 	}
 
 	@Override
 	public void update() {
-		force = Direction.toForce(pointingTowards,
-				currentThrustPercent * maximumThrust);
+		force = Direction.toForce(pointingTowards, currentThrustPercent
+				* maximumThrust);
 		if (force.x != 0f || force.y != 0f) {
 			Point<Float> rotatedPosition = calculateWorldEngineLocation();
 			Point<Float> rotatedForce = calculateLocalEngineForce();

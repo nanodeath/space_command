@@ -16,7 +16,6 @@ import com.wasome.space_command.components.BasicEngine;
 import com.wasome.space_command.components.Engine;
 import com.wasome.space_command.components.Engine.Direction;
 import com.wasome.space_command.data.Point;
-import com.wasome.space_command.util.PointUtil;
 
 @Component
 @Scope("prototype")
@@ -64,11 +63,11 @@ public class BasicShip extends Ship {
 			Input input = getInput();
 			if (input.isKeyDown(Input.KEY_Q)) {
 				if (!input.isKeyDown(Input.KEY_E))
-					body.setAngularVelocity(-1f);
+					body.setAngularVelocity(1f);
 				// turnCounterClockwise();
 			} else if (input.isKeyDown(Input.KEY_E)) {
 				// turnClockwise();
-				body.setAngularVelocity(1f);
+				body.setAngularVelocity(-1f);
 			}
 			if (input.isKeyDown(Input.KEY_W)) {
 				accelerate();
@@ -100,7 +99,7 @@ public class BasicShip extends Ship {
 				body.getY(), size.x, size.y);
 		Image image = getImage().copy();
 		float rotation = (float) Math.toDegrees(body.getRotation());
-		image.rotate(rotation);
+		image.rotate(-rotation);
 		SpaceCommandGame.getGraphics().drawImage(image, screenPoint.x,
 				screenPoint.y);
 	}
