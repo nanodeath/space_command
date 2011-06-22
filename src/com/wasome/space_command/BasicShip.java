@@ -36,7 +36,7 @@ public class BasicShip extends Ship {
 		image = new Image("res/spaceship.png");
 		enableDirectControl();
 
-		// add engines
+		// add rear engines
 		// right engine
 		Engine rightEngine = SpaceCommandGame.spring.getBean(BasicEngine.class);
 		rightEngine.setFacingDirection(Direction.STERN);
@@ -50,9 +50,22 @@ public class BasicShip extends Ship {
 		leftEngine
 				.setLocalPosition(new Point<Float>(-size.x / 2f, -size.y / 2));
 		addComponent(leftEngine);
+		
+		// adding lateral engines
+		// right engine
+		Engine rightLateralEngine = SpaceCommandGame.spring.getBean(BasicEngine.class);
+		rightLateralEngine.setFacingDirection(Direction.STARBOARD);
+		rightLateralEngine.setLocalPosition(new Point<Float>(size.x / 2f, 0f));
+		addComponent(rightLateralEngine);
+		
+		// left engine
+		Engine leftLateralEngine = SpaceCommandGame.spring.getBean(BasicEngine.class);
+		leftLateralEngine.setFacingDirection(Direction.PORT);
+		leftLateralEngine.setLocalPosition(new Point<Float>(-size.x / 2f, 0f));
+		addComponent(leftLateralEngine);
 	}
 
-	private boolean accelerating = false, reversing = false;
+	private boolean accelerating = false, reversing = false, acceleratingRight = false, acceleratingLeft = false;
 
 	@Override
 	public void update() {
@@ -71,7 +84,6 @@ public class BasicShip extends Ship {
 			}
 			if (input.isKeyDown(Input.KEY_W)) {
 				accelerate();
-				System.out.println("Accelerating");
 				accelerating = true;
 			} else if (accelerating) {
 				stopAccelerating();
@@ -84,6 +96,23 @@ public class BasicShip extends Ship {
 				stopReversing();
 				reversing = false;
 			}
+			
+			if(input.isKeyDown(Input.KEY_A)){
+				turnEnginesOnOff(Direction.PORT, Direction.STARBOARD);
+				acceleratingRight = true;
+			} else if(acceleratingRight){
+				turnEnginesOnOff(null, Direction.PORT);
+				acceleratingRight = false;
+			}
+			
+			if(input.isKeyDown(Input.KEY_D)){
+				turnEnginesOnOff(Direction.STARBOARD, Direction.PORT);
+				acceleratingLeft = true;
+			} else if(acceleratingLeft){
+				turnEnginesOnOff(null, Direction.STARBOARD);
+				acceleratingLeft = false;
+			}
+			
 			if (input.isKeyDown(Input.KEY_G)) {
 				body.setVelocity(0f, 0f);
 				body.setAngularVelocity(0f);
