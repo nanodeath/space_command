@@ -23,9 +23,9 @@ public class CatMothership extends Ship {
 		size = new Point<Float>(8f, 8f);
 		Shape shape = new Circle(size.x / 2);
 		body = new DynamicBody(shape, 10f, 15f);
-		body.setAngularDamping(0.5f);
 
 		SpaceCommandGame.getWorld().add(body);
+		body.setAngularVelocity(0.05f);
 		image = new Image("res/hovership.png");
 	}
 
