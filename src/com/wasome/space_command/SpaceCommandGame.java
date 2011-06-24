@@ -70,6 +70,9 @@ public final class SpaceCommandGame extends BasicGame {
 	@Override
 	public void init(GameContainer arg0) throws SlickException {
 		world = new World(0f);
+		Space space = spring.getBean(Space.class);
+		updatableThings.add(space);
+		renderableThings.add(space);
 		Ship mainShip = spring.getBean(BasicShip.class);
 		ships.add(mainShip);
 		updatableThings.add(mainShip);

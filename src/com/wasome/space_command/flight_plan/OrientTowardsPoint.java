@@ -1,5 +1,10 @@
 package com.wasome.space_command.flight_plan;
 
+import static com.wasome.space_command.util.MathUtil.angleBetweenPoints;
+import static com.wasome.space_command.util.MathUtil.clampAngleToNormalRange;
+
+import org.jbox2d.common.MathUtils;
+
 import com.wasome.space_command.Ship;
 import com.wasome.space_command.data.Point;
 import com.wasome.space_command.util.MathUtil;
@@ -21,7 +26,7 @@ public class OrientTowardsPoint implements FlightStep {
 
 	@Override
 	public boolean isDone() {
-		float currentAngle = ship.getOrientation();
+		float currentAngle = ship.getRotation();
 		return MathUtil.withinTolerance(currentAngle, getDesiredAngle(),
 				THRESHOLD);
 	}
@@ -32,6 +37,6 @@ public class OrientTowardsPoint implements FlightStep {
 	}
 
 	private float getDesiredAngle() {
-		return MathUtil.angleBetweenPoints(ship.getCenter(), point);
+		return clampAngleToNormalRange(angleBetweenPoints(ship.getCenter(), point) - MathUtils.HALF_PI);
 	}
 }

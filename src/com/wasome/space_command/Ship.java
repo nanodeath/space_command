@@ -12,15 +12,15 @@ import com.wasome.space_command.components.Engine;
 import com.wasome.space_command.components.Engine.Direction;
 import com.wasome.space_command.data.Point;
 import com.wasome.space_command.flight_plan.FlightPlan;
+import com.wasome.space_command.flight_plan.OrientTowardsPoint;
 import com.wasome.space_command.util.CollectionUtil;
 
 public abstract class Ship implements WorldElement {
 	protected List<ShipComponent> allComponents = new ArrayList<ShipComponent>();
 	protected List<WorldRenderable> visibleComponents = new ArrayList<WorldRenderable>();
-	protected float orientation;
 	protected FlightPlan flightPlan;
 	protected boolean directControlEnabled;
-	protected Body body;
+	protected Body<Ship> body;
 	protected Point<Float> size;
 
 	public void updateComponents() {
@@ -32,6 +32,12 @@ public abstract class Ship implements WorldElement {
 	public void renderComponents() {
 		for (WorldRenderable visibleComponent : visibleComponents) {
 			visibleComponent.render();
+		}
+	}
+	
+	public void performFlightPlan(){
+		if(flightPlan != null && flightPlan.isValid()){
+			flightPlan.perform(this);
 		}
 	}
 
@@ -59,10 +65,6 @@ public abstract class Ship implements WorldElement {
 		return body.getRotation();
 	}
 
-	public float getOrientation() {
-		return orientation;
-	}
-
 	private class EngineFacingPredicate implements Predicate {
 		private Direction direction;
 
@@ -77,15 +79,15 @@ public abstract class Ship implements WorldElement {
 	}
 
 	public void turnToAngle(float angle) {
-		float difference = Math.abs(orientation - angle);
+		float difference = Math.abs(body.getRotation() - angle);
 
-		if (difference <= 0.001f) {
+		if (difference <= 0.1f) {
 			return;
 		}
 
-		if (orientation > angle) {
+		if (body.getRotation() < angle) {
 			turnCounterClockwise();
-		} else if (orientation < angle) {
+		} else if (body.getRotation() > angle) {
 			turnClockwise();
 		}
 	}
@@ -93,11 +95,11 @@ public abstract class Ship implements WorldElement {
 	private static final Engine[] EMPTY_ENGINE_ARRAY = new Engine[] {};
 
 	protected void turnClockwise() {
-		turnEnginesOnOff(Direction.STARBOARD, Direction.PORT);
+		body.setAngularVelocity(-1f);
 	}
 
 	protected void turnCounterClockwise() {
-		turnEnginesOnOff(Direction.PORT, Direction.STARBOARD);
+		body.setAngularVelocity(1f);
 	}
 
 	protected void accelerate() {
@@ -161,9 +163,15 @@ public abstract class Ship implements WorldElement {
 		directControlEnabled = false;
 	}
 
-	public Body getBody() {
+	public Body<Ship> getBody() {
 		return body;
 	}
 
 	abstract protected Image getImage();
+
+	public void goTo(Point<Float> worldPoint) {
+		FlightPlan fp = new FlightPlan();
+		fp.addStep(new OrientTowardsPoint(worldPoint));
+		flightPlan = fp;
+	}
 }

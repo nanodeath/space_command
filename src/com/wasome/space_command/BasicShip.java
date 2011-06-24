@@ -29,7 +29,8 @@ public class BasicShip extends Ship {
 		super();
 		size = new Point<Float>(1f, 1f);
 		Shape shape = new Rectangle(size.x, size.y);
-		body = new DynamicBody(shape, 20f, 25f);
+		body = new DynamicBody<Ship>(shape, 20f, 25f);
+		body.setUserData(this);
 		body.setAngularDamping(0.5f);
 
 		SpaceCommandGame.getWorld().add(body);
@@ -70,8 +71,7 @@ public class BasicShip extends Ship {
 	@Override
 	public void update() {
 		updateComponents();
-		System.out.println("Angular velocity: " + body.getAngularVelocity()
-				+ "\t, rotation: " + body.getRotation());
+		performFlightPlan();
 		if (directControlEnabled) {
 			Input input = getInput();
 			if (input.isKeyDown(Input.KEY_Q)) {

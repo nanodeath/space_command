@@ -37,4 +37,14 @@ public class MathUtil {
 			return angle - PI;
 		}
 	}
+	
+	public static float clampAngleToNormalRange(float angleInRadians){
+		while(angleInRadians < -TWO_PI){
+			angleInRadians += TWO_PI;
+		}
+		while(angleInRadians >TWO_PI){
+			angleInRadians -= TWO_PI;
+		}
+		return angleInRadians;
+	}
 }

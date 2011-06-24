@@ -2,7 +2,6 @@ package com.wasome.space_command;
 
 import org.newdawn.fizzy.Circle;
 import org.newdawn.fizzy.DynamicBody;
-import org.newdawn.fizzy.Rectangle;
 import org.newdawn.fizzy.Shape;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
@@ -17,13 +16,12 @@ public class CatMothership extends Ship {
 	@Autowired
 	private Camera camera;
 
-	@SuppressWarnings("rawtypes")
 	public CatMothership() throws SlickException {
 		super();
 		size = new Point<Float>(8f, 8f);
 		Shape shape = new Circle(size.x / 2);
-		body = new DynamicBody(shape, 10f, 15f);
-
+		body = new DynamicBody<Ship>(shape, 10f, 15f);
+		body.setUserData(this);
 		SpaceCommandGame.getWorld().add(body);
 		body.setAngularVelocity(0.05f);
 		image = new Image("res/hovership.png");
