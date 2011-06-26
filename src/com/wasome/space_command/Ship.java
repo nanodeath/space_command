@@ -2,7 +2,6 @@ package com.wasome.space_command;
 
 import static com.wasome.space_command.util.PointUtil.rotateAbout;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -16,25 +15,21 @@ import com.wasome.space_command.data.Point;
 import com.wasome.space_command.flight_plan.FlightPlan;
 import com.wasome.space_command.flight_plan.OrientTowardsPoint;
 import com.wasome.space_command.util.CollectionUtil;
+import com.wasome.space_command.util.WorldElementCollection;
 
-public abstract class Ship implements WorldElement {
-	protected List<ShipComponent> allComponents = new ArrayList<ShipComponent>();
-	protected List<WorldRenderable> visibleComponents = new ArrayList<WorldRenderable>();
+public abstract class Ship extends Entity {
+	protected WorldElementCollection components = new WorldElementCollection();
 	protected FlightPlan flightPlan;
 	protected boolean directControlEnabled;
 	protected Body<Ship> body;
 	protected Point<Float> size;
 
 	public void updateComponents() {
-		for (ShipComponent component : allComponents) {
-			component.update();
-		}
+		components.update();
 	}
 
 	public void renderComponents() {
-		for (WorldRenderable visibleComponent : visibleComponents) {
-			visibleComponent.render();
-		}
+		components.render();
 	}
 
 	public void performFlightPlan() {
@@ -45,10 +40,7 @@ public abstract class Ship implements WorldElement {
 
 	public void addComponent(ShipComponent c) {
 		c.setShip(this);
-		allComponents.add(c);
-		if (c instanceof WorldRenderable) {
-			visibleComponents.add((WorldRenderable) c);
-		}
+		components.addElement(c);
 	}
 
 	public Point<Float> getCenter() {
@@ -160,9 +152,9 @@ public abstract class Ship implements WorldElement {
 
 	public List<Engine> getEngineComponents() {
 		List<Engine> engines = new LinkedList<Engine>();
-		for (ShipComponent component : allComponents) {
-			if (component instanceof Engine) {
-				engines.add((Engine) component);
+		for(Entity component : components.updatableElements){
+			if(component instanceof Engine){
+				engines.add((Engine)component);
 			}
 		}
 		return engines;
@@ -195,5 +187,9 @@ public abstract class Ship implements WorldElement {
 		FlightPlan fp = new FlightPlan();
 		fp.addStep(new OrientTowardsPoint(worldPoint));
 		flightPlan = fp;
+	}
+
+	public void initializeAtLocation(Point<Float> point) {
+		
 	}
 }

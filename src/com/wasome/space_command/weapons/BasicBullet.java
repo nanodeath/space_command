@@ -11,13 +11,20 @@ import org.springframework.stereotype.Component;
 
 import com.wasome.space_command.Camera;
 import com.wasome.space_command.SpaceCommandGame;
+import com.wasome.space_command.behavior.Visible;
 import com.wasome.space_command.data.Point;
+import com.wasome.space_command.util.Timer;
+import com.wasome.space_command.util.Timer.Task;
 
 @Component
 @Scope("prototype")
+@Visible
 public class BasicBullet extends Projectile {
 	@Autowired
 	private Camera camera;
+	
+	@Autowired
+	private Timer timer;
 	
 	private Point<Float> size = new Point<Float>(0.1f, 0.1f); 
 	private Point<Float> screenSize;
@@ -28,6 +35,7 @@ public class BasicBullet extends Projectile {
 		body = new DynamicBody<Projectile>(rectangle, position.x, position.y);
 		body.setBullet(true);
 		screenSize = camera.scaleWorldToScreen(size.x, size.y);
+		timer.registerOnceAlarm(1000, new SelfDestruct());
 	}
 
 	@Override
@@ -43,10 +51,10 @@ public class BasicBullet extends Projectile {
 		// TODO should hit things
 	}
 
+	private boolean isDestroyed = false;
 	@Override
 	public boolean isDestroyed() {
-		// TODO when it has hit something, it should die.
-		return false;
+		return isDestroyed;
 	}
 
 	@Override
@@ -54,4 +62,12 @@ public class BasicBullet extends Projectile {
 		return 10f;
 	}
 
+	private class SelfDestruct implements Task {
+
+		@Override
+		public void executeAlarmTask() {
+			isDestroyed = true;
+			
+		}
+	}
 }

@@ -10,7 +10,7 @@ import com.wasome.space_command.data.Point;
 @Scope("prototype")
 public class BasicGun extends Gun {
 	public BasicGun() {
-		fireRate = 500;
+		fireRate = 50;
 	}
 
 	@Override

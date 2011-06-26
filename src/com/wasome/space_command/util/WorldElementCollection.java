@@ -1,45 +1,50 @@
 package com.wasome.space_command.util;
 
-import java.util.HashSet;
+import static com.wasome.space_command.SpaceCommandGame.getWorld;
+import static java.util.Collections.unmodifiableSet;
+
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
-import com.wasome.space_command.WorldElement;
-import com.wasome.space_command.WorldRenderable;
-import com.wasome.space_command.WorldUpdatable;
+import com.wasome.space_command.Entity;
+import com.wasome.space_command.behavior.HasBody;
+import com.wasome.space_command.behavior.Visible;
 
-public class WorldElementCollection implements WorldElement {
-	private final Set<WorldUpdatable> updatableThings = new HashSet<WorldUpdatable>();
-	private final Set<WorldRenderable> renderableThings = new HashSet<WorldRenderable>();
+@Visible
+public class WorldElementCollection extends Entity {
+	private final Set<Entity> _updatableThings = new LinkedHashSet<Entity>();
+	private final Set<Entity> _renderableThings = new LinkedHashSet<Entity>();
+	public final Set<Entity> updatableElements = unmodifiableSet(_updatableThings);
+	public final Set<Entity> renderableElements = unmodifiableSet(_renderableThings);
 	
-	public void addElement(WorldElement element){
-		updatableThings.add(element);
-		renderableThings.add(element);
-	}
-	
-	public void addElement(WorldRenderable renderable){
-		renderableThings.add(renderable);
-	}
-	
-	public void addElement(WorldUpdatable updatable){
-		updatableThings.add(updatable);
+	public void addElement(Entity element){
+		_updatableThings.add(element);
+		if(element.getClass().isAnnotationPresent(Visible.class)){
+			_renderableThings.add(element);
+		}
 	}
 
 	@Override
 	public void render() {
-		for(WorldRenderable renderable : renderableThings){
-			renderable.render();
+		for(Entity entity : _renderableThings){
+			entity.render();
 		}
 	}
 
 	@Override
 	public void update() {
-		Iterator<WorldUpdatable> iterator = updatableThings.iterator();
+		Iterator<Entity> iterator = _updatableThings.iterator();
 		while(iterator.hasNext()){
-			WorldUpdatable updatable = iterator.next();
+			Entity updatable = iterator.next();
 			updatable.update();
 			if(updatable.isDestroyed()){
 				iterator.remove();
+				_renderableThings.remove(updatable);
+				if(updatable.getClass().isAnnotationPresent(HasBody.class)){
+					getWorld().remove(updatable.getBody());
+				}
 			}
 		}
 	}
@@ -48,5 +53,4 @@ public class WorldElementCollection implements WorldElement {
 	public boolean isDestroyed() {
 		return false;
 	}
-
 }

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import com.wasome.space_command.behavior.Visible;
 import com.wasome.space_command.components.BasicEngine;
 import com.wasome.space_command.components.BasicGyroEngine;
 import com.wasome.space_command.components.Engine;
@@ -21,6 +22,7 @@ import com.wasome.space_command.weapons.Gun;
 
 @Component
 @Scope("prototype")
+@Visible
 public class BasicShip extends Ship {
 	@Autowired
 	private Camera camera;
@@ -30,12 +32,7 @@ public class BasicShip extends Ship {
 	public BasicShip() throws SlickException {
 		super();
 		size = new Point<Float>(1f, 1f);
-		Shape shape = new Rectangle(size.x, size.y);
-		body = new DynamicBody<Ship>(shape, 20f, 25f);
-		body.setUserData(this);
-		body.setAngularDamping(0.5f);
-
-		SpaceCommandGame.getWorld().add(body);
+		
 		image = new Image("res/spaceship.png");
 		enableDirectControl();
 
@@ -78,6 +75,16 @@ public class BasicShip extends Ship {
 		Gun gun = SpaceCommandGame.spring.getBean(Gun.class);
 		gun.setLocalPosition(new Point<Float>(0f, size.y / 2));
 		addComponent(gun);
+	}
+	
+	@Override
+	public void initializeAtLocation(Point<Float> position) {
+		Shape shape = new Rectangle(size.x, size.y);
+		body = new DynamicBody<Ship>(shape, 20f, 25f);
+		body.setUserData(this);
+		body.setAngularDamping(0.5f);
+
+		SpaceCommandGame.getWorld().add(body);
 	}
 
 	private boolean accelerating = false, reversing = false,

@@ -16,10 +16,12 @@ import org.newdawn.slick.Input;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.wasome.space_command.behavior.Visible;
 import com.wasome.space_command.data.Point;
 
 @Component
-public class Space implements WorldElement {
+@Visible
+public class Space extends Entity {
 	private List<Ship> selectedShips = new LinkedList<Ship>();
 	@Autowired
 	private Camera camera;

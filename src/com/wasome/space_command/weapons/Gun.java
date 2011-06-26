@@ -7,13 +7,13 @@ import static com.wasome.space_command.SpaceCommandGame.getWorld;
 import org.newdawn.slick.Input;
 
 import com.wasome.space_command.ShipComponent;
-import com.wasome.space_command.WorldRenderable;
+import com.wasome.space_command.behavior.Visible;
 import com.wasome.space_command.data.Point;
 import com.wasome.space_command.util.PointUtil;
 import com.wasome.space_command.util.WorldElementCollection;
 
-abstract public class Gun extends ShipComponent implements WorldRenderable {
-
+@Visible
+abstract public class Gun extends ShipComponent {
 	private long lastFiredAt = 0;
 	protected int fireRate = 0;
 	protected Point<Float> localPosition;

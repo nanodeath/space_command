@@ -8,9 +8,11 @@ import org.newdawn.slick.SlickException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.wasome.space_command.behavior.Visible;
 import com.wasome.space_command.data.Point;
 
 @Component
+@Visible
 public class CatMothership extends Ship {
 	private Image image;
 	@Autowired
@@ -19,12 +21,16 @@ public class CatMothership extends Ship {
 	public CatMothership() throws SlickException {
 		super();
 		size = new Point<Float>(8f, 8f);
+		image = new Image("res/hovership.png");
+	}
+
+	@Override
+	public void initializeAtLocation(Point<Float> point) {
 		Shape shape = new Circle(size.x / 2);
-		body = new DynamicBody<Ship>(shape, 10f, 15f);
+		body = new DynamicBody<Ship>(shape, point.x, point.y);
 		body.setUserData(this);
 		SpaceCommandGame.getWorld().add(body);
 		body.setAngularVelocity(0.05f);
-		image = new Image("res/hovership.png");
 	}
 
 	@Override

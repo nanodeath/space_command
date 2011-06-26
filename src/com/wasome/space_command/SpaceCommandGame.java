@@ -1,8 +1,6 @@
 package com.wasome.space_command;
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.newdawn.fizzy.World;
@@ -12,9 +10,14 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.AbstractXmlApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 import org.springframework.stereotype.Component;
+
+import com.wasome.space_command.behavior.Visible;
+import com.wasome.space_command.data.Point;
+import com.wasome.space_command.util.Timer;
 
 @Component
 public final class SpaceCommandGame extends BasicGame {
@@ -30,8 +33,11 @@ public final class SpaceCommandGame extends BasicGame {
 	private static Input input;
 	private static World world;
 
-	private final Set<WorldUpdatable> updatableThings = new HashSet<WorldUpdatable>();
-	private final Set<WorldRenderable> renderableThings = new HashSet<WorldRenderable>();
+	private static final Set<Entity> updatableThings = new LinkedHashSet<Entity>();
+	private static final Set<Entity> renderableThings = new LinkedHashSet<Entity>();
+	
+	@Autowired
+	private Timer timer;
 
 	public SpaceCommandGame() {
 		super("Game");
@@ -64,24 +70,37 @@ public final class SpaceCommandGame extends BasicGame {
 	public static final World getWorld(){
 		return world;
 	}
-	
-	private List<Ship> ships = new LinkedList<Ship>();
 
 	@Override
 	public void init(GameContainer arg0) throws SlickException {
 		world = new World(0f);
+		
+		addToGameWorld(timer);
+		
 		Space space = spring.getBean(Space.class);
-		updatableThings.add(space);
-		renderableThings.add(space);
+		addToGameWorld(space);
+//		updatableThings.add(space);
+//		renderableThings.add(space);
+		
 		Ship mainShip = spring.getBean(BasicShip.class);
-		ships.add(mainShip);
-		updatableThings.add(mainShip);
-		renderableThings.add(mainShip);
+		addToGameWorld(mainShip);
+		mainShip.initializeAtLocation(new Point<Float>(25f, 20f));
+//		ships.add(mainShip);
+//		updatableThings.add(mainShip);
+//		renderableThings.add(mainShip);
+		
+//		Ship otherShip = spring.getBean(BasicShip.class);
+//		addToGameWorld(otherShip);
+//		ships.add(otherShip);
+//		updatableThings.add(otherShip);
+//		renderableThings.add(otherShip);
 		
 		Ship mothership = spring.getBean(CatMothership.class);
-		ships.add(mothership);
-		updatableThings.add(mothership);
-		renderableThings.add(mothership);
+		addToGameWorld(mothership);
+		mothership.initializeAtLocation(new Point<Float>(10f, 15f));
+//		ships.add(mothership);
+//		updatableThings.add(mothership);
+//		renderableThings.add(mothership);
 	}
 
 	@Override
@@ -90,8 +109,8 @@ public final class SpaceCommandGame extends BasicGame {
 		SpaceCommandGame.msDelta = msDelta;
 		SpaceCommandGame.input = gameContainer.getInput();
 		updating = true;
-		for(WorldUpdatable thing : updatableThings){
-			thing.update();
+		for(Entity entity : updatableThings){
+			entity.update();
 		}
 		world.update(((float)msDelta) / 1000f);
 		updating = false;
@@ -103,8 +122,17 @@ public final class SpaceCommandGame extends BasicGame {
 		graphics = g;
 		
 		rendering = true;
-		for(WorldRenderable thing : renderableThings){
-			thing.render();
+		for(Entity entity : renderableThings){
+			Visible visible = entity.getClass().getAnnotation(Visible.class);
+			switch(visible.when()){
+			case ALWAYS:
+				entity.render();
+				break;
+			case CONDITIONALLY:
+				if(entity.shouldRender())
+					entity.render();
+				break;
+			}
 		}
 		rendering = false;
 	}
@@ -126,4 +154,10 @@ public final class SpaceCommandGame extends BasicGame {
 		app.start();
 	}
 
+	public static void addToGameWorld(Entity entity) {
+		updatableThings.add(entity);
+		if(entity.getClass().isAnnotationPresent(Visible.class)){
+			renderableThings.add(entity);
+		}
+	}
 }
