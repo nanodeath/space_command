@@ -34,9 +34,9 @@ public abstract class Ship implements WorldElement {
 			visibleComponent.render();
 		}
 	}
-	
-	public void performFlightPlan(){
-		if(flightPlan != null && flightPlan.isValid()){
+
+	public void performFlightPlan() {
+		if (flightPlan != null && flightPlan.isValid()) {
 			flightPlan.perform(this);
 		}
 	}
@@ -56,12 +56,13 @@ public abstract class Ship implements WorldElement {
 	public Point<Float> getSize() {
 		return size;
 	}
-	
+
 	/**
 	 * Rotation in radians
+	 * 
 	 * @return rotation in radians
 	 */
-	public float getRotation(){
+	public float getRotation() {
 		return body.getRotation();
 	}
 
@@ -94,17 +95,27 @@ public abstract class Ship implements WorldElement {
 
 	private static final Engine[] EMPTY_ENGINE_ARRAY = new Engine[] {};
 
+	protected final List<Engine> getGyroEngines(){
+		return CollectionUtil.partition(getEngineComponents(),
+				new EngineFacingPredicate(Direction.GYRO)).get(0);
+	}
+	
 	protected void turnClockwise() {
-		body.setAngularVelocity(-1f);
+		setEngineOutput(-1f, getGyroEngines().toArray(EMPTY_ENGINE_ARRAY));
 	}
 
 	protected void turnCounterClockwise() {
-		body.setAngularVelocity(1f);
+		setEngineOutput(1f, getGyroEngines().toArray(EMPTY_ENGINE_ARRAY));
+	}
+
+	protected void stopTurning() {
+		setEngineOutput(0f, getGyroEngines().toArray(EMPTY_ENGINE_ARRAY));
 	}
 
 	protected void accelerate() {
 		turnEnginesOnOff(Direction.STERN, Direction.BOW);
 	}
+
 	protected void stopAccelerating() {
 		turnEnginesOnOff(null, Direction.STERN);
 	}
@@ -112,15 +123,15 @@ public abstract class Ship implements WorldElement {
 	protected void reverse() {
 		turnEnginesOnOff(Direction.BOW, Direction.STERN);
 	}
+
 	protected void stopReversing() {
 		turnEnginesOnOff(null, Direction.BOW);
 	}
-	
-	protected void turnEnginesOnOff(Direction turnOn, Direction turnOff){
+
+	protected void turnEnginesOnOff(Direction turnOn, Direction turnOff) {
 		List<List<Engine>> partitionedEngines = CollectionUtil.partition(
-				getEngineComponents(), new EngineFacingPredicate(
-						turnOn), new EngineFacingPredicate(
-						turnOff));
+				getEngineComponents(), new EngineFacingPredicate(turnOn),
+				new EngineFacingPredicate(turnOff));
 		List<Engine> enginesToTurnOn = partitionedEngines.get(0);
 		List<Engine> enginesToTurnOff = partitionedEngines.get(1);
 		setEngineOutput(1f, enginesToTurnOn.toArray(EMPTY_ENGINE_ARRAY));

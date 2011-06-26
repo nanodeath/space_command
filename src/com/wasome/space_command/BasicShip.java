@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.wasome.space_command.components.BasicEngine;
+import com.wasome.space_command.components.BasicGyroEngine;
 import com.wasome.space_command.components.Engine;
 import com.wasome.space_command.components.Engine.Direction;
 import com.wasome.space_command.data.Point;
@@ -51,22 +52,31 @@ public class BasicShip extends Ship {
 		leftEngine
 				.setLocalPosition(new Point<Float>(-size.x / 2f, -size.y / 2));
 		addComponent(leftEngine);
-		
+
 		// adding lateral engines
 		// right engine
-		Engine rightLateralEngine = SpaceCommandGame.spring.getBean(BasicEngine.class);
+		Engine rightLateralEngine = SpaceCommandGame.spring
+				.getBean(BasicEngine.class);
 		rightLateralEngine.setFacingDirection(Direction.STARBOARD);
 		rightLateralEngine.setLocalPosition(new Point<Float>(size.x / 2f, 0f));
 		addComponent(rightLateralEngine);
-		
+
 		// left engine
-		Engine leftLateralEngine = SpaceCommandGame.spring.getBean(BasicEngine.class);
+		Engine leftLateralEngine = SpaceCommandGame.spring
+				.getBean(BasicEngine.class);
 		leftLateralEngine.setFacingDirection(Direction.PORT);
 		leftLateralEngine.setLocalPosition(new Point<Float>(-size.x / 2f, 0f));
 		addComponent(leftLateralEngine);
+
+		// adding gyro
+		Engine gyroEngine = SpaceCommandGame.spring
+				.getBean(BasicGyroEngine.class);
+		addComponent(gyroEngine);
 	}
 
-	private boolean accelerating = false, reversing = false, acceleratingRight = false, acceleratingLeft = false;
+	private boolean accelerating = false, reversing = false,
+			acceleratingRight = false, acceleratingLeft = false,
+			turningCCW = false, turningCW = false;
 
 	@Override
 	public void update() {
@@ -75,13 +85,20 @@ public class BasicShip extends Ship {
 		if (directControlEnabled) {
 			Input input = getInput();
 			if (input.isKeyDown(Input.KEY_Q)) {
-				if (!input.isKeyDown(Input.KEY_E))
-					body.setAngularVelocity(1f);
-				// turnCounterClockwise();
-			} else if (input.isKeyDown(Input.KEY_E)) {
-				// turnClockwise();
-				body.setAngularVelocity(-1f);
+				turnCounterClockwise();
+				turningCCW = true;
+			} else if (turningCCW) {
+				stopTurning();
+				turningCCW = false;
 			}
+			if (input.isKeyDown(Input.KEY_E)) {
+				turnClockwise();
+				turningCW = true;
+			} else if(turningCW) {
+				stopTurning();
+				turningCW = false;
+			}
+
 			if (input.isKeyDown(Input.KEY_W)) {
 				accelerate();
 				accelerating = true;
@@ -96,23 +113,23 @@ public class BasicShip extends Ship {
 				stopReversing();
 				reversing = false;
 			}
-			
-			if(input.isKeyDown(Input.KEY_A)){
+
+			if (input.isKeyDown(Input.KEY_A)) {
 				turnEnginesOnOff(Direction.STARBOARD, Direction.PORT);
 				acceleratingLeft = true;
-			} else if(acceleratingLeft){
+			} else if (acceleratingLeft) {
 				turnEnginesOnOff(null, Direction.STARBOARD);
 				acceleratingLeft = false;
 			}
-			
-			if(input.isKeyDown(Input.KEY_D)){
+
+			if (input.isKeyDown(Input.KEY_D)) {
 				turnEnginesOnOff(Direction.PORT, Direction.STARBOARD);
 				acceleratingRight = true;
-			} else if(acceleratingRight){
+			} else if (acceleratingRight) {
 				turnEnginesOnOff(null, Direction.PORT);
 				acceleratingRight = false;
 			}
-			
+
 			if (input.isKeyDown(Input.KEY_G)) {
 				body.setVelocity(0f, 0f);
 				body.setAngularVelocity(0f);

@@ -22,5 +22,5 @@ public final class Point<T> {
 		return (float) Math.hypot(a, b);
 	}
 	
-	public static final Point<Float> NULL_FLOAT = new Point<Float>(0f, 0f);
+	public static final Point<Float> ORIGIN_FLOAT = new Point<Float>(0f, 0f);
 }

@@ -2,7 +2,7 @@ package com.wasome.space_command.components;
 
 import static com.wasome.space_command.util.PointUtil.rotateAbout;
 
-import org.jbox2d.common.Vec2;
+import org.jbox2d.common.MathUtils;
 
 import com.wasome.space_command.ShipComponent;
 import com.wasome.space_command.WorldElement;
@@ -14,8 +14,8 @@ public abstract class Engine extends ShipComponent implements WorldElement {
 	protected float currentThrustPercent = 0f;
 	protected float timeToMaximumThrust = 0f;
 	protected Direction pointingTowards;
-	protected Point<Float> localPosition = Point.NULL_FLOAT;
-	protected Point<Float> force = Point.NULL_FLOAT;
+	protected Point<Float> localPosition = Point.ORIGIN_FLOAT;
+	protected Point<Float> force = Point.ORIGIN_FLOAT;
 
 	public static enum Direction {
 		/**
@@ -33,7 +33,11 @@ public abstract class Engine extends ShipComponent implements WorldElement {
 		/**
 		 * Right, CW (Clockwise)
 		 */
-		STARBOARD;
+		STARBOARD,
+		/**
+		 * Special gyroscope type, can spin ships in place.
+		 */
+		GYRO;
 
 		/**
 		 * @param d
@@ -116,11 +120,11 @@ public abstract class Engine extends ShipComponent implements WorldElement {
 	}
 
 	/**
-	 * 
+	 * Set the current output of the engine as a percentage.
 	 * @param percent
 	 *            a float between 0 and 1 (1 being 100%)
 	 */
 	public void setOutput(float percent) {
-		currentThrustPercent = percent;
+		currentThrustPercent = MathUtils.clamp(percent, 0f, 1f);
 	}
 }
