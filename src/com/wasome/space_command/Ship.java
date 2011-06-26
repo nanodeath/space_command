@@ -1,5 +1,7 @@
 package com.wasome.space_command;
 
+import static com.wasome.space_command.util.PointUtil.rotateAbout;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -176,6 +178,15 @@ public abstract class Ship implements WorldElement {
 
 	public Body<Ship> getBody() {
 		return body;
+	}
+	
+	public Point<Float> localToWorld(Point<Float> localPoint){
+		Point<Float> worldCenter = new Point<Float>(body.getX(), body.getY());
+		Point<Float> worldEnginePosition = new Point<Float>(worldCenter.x
+				+ localPoint.x, worldCenter.y + localPoint.y);
+		Point<Float> rotated = rotateAbout(worldCenter,
+				worldEnginePosition, getRotation(), true);
+		return rotated;
 	}
 
 	abstract protected Image getImage();

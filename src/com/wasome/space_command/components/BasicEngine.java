@@ -42,4 +42,9 @@ public class BasicEngine extends Engine {
 		float x2 = x1 - rotatedScreenForce.x, y2 = y1 + rotatedScreenForce.y;
 		g.drawGradientLine(x1, y1, Color.red, x2, y2, Color.blue);
 	}
+
+	@Override
+	public boolean isDestroyed() {
+		return false;
+	}
 }

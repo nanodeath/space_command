@@ -6,7 +6,7 @@ abstract public class ShipComponent implements WorldUpdatable {
 	protected Ship ship;
 
 	public Point<Float> getLocalPosition(){
-		return new Point<Float>(0f, 0f);
+		return Point.ORIGIN_FLOAT;
 	}
 
 	public void setShip(Ship s){

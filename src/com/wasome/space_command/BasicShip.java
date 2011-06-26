@@ -17,6 +17,7 @@ import com.wasome.space_command.components.BasicGyroEngine;
 import com.wasome.space_command.components.Engine;
 import com.wasome.space_command.components.Engine.Direction;
 import com.wasome.space_command.data.Point;
+import com.wasome.space_command.weapons.Gun;
 
 @Component
 @Scope("prototype")
@@ -72,6 +73,11 @@ public class BasicShip extends Ship {
 		Engine gyroEngine = SpaceCommandGame.spring
 				.getBean(BasicGyroEngine.class);
 		addComponent(gyroEngine);
+		
+		// adding weapons
+		Gun gun = SpaceCommandGame.spring.getBean(Gun.class);
+		gun.setLocalPosition(new Point<Float>(0f, size.y / 2));
+		addComponent(gun);
 	}
 
 	private boolean accelerating = false, reversing = false,
@@ -153,5 +159,10 @@ public class BasicShip extends Ship {
 	@Override
 	protected Image getImage() {
 		return image;
+	}
+
+	@Override
+	public boolean isDestroyed() {
+		return false;
 	}
 }

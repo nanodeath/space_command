@@ -70,4 +70,9 @@ public class Space implements WorldElement {
 		}
 	}
 
+	@Override
+	public boolean isDestroyed() {
+		return false;
+	}
+
 }

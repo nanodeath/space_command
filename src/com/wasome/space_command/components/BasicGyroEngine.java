@@ -38,4 +38,9 @@ public class BasicGyroEngine extends Engine {
 	public void render() {
 
 	}
+
+	@Override
+	public boolean isDestroyed() {
+		return false;
+	}
 }

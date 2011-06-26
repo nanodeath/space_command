@@ -50,4 +50,9 @@ public class CatMothership extends Ship {
 		return image;
 	}
 
+	@Override
+	public boolean isDestroyed() {
+		return false;
+	}
+
 }
