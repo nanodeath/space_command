@@ -1,7 +1,7 @@
 package com.wasome.space_command.components;
 
 import static com.wasome.space_command.SpaceCommandGame.getGraphics;
-import static com.wasome.space_command.gui.PlayerInput.SHOW_INVENTORY;
+import static com.wasome.space_command.player.PlayerInput.SHOW_INVENTORY;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -29,17 +29,17 @@ public class Inventory extends ShipComponent {
 	private float topOffset = 10f;
 	// columns, then rows
 	private Item[][] stuff;
-	
+
 	{
 		stuff = new Item[tilesWide][];
-		for(int w = 0; w < tilesWide; w++){
+		for (int w = 0; w < tilesWide; w++) {
 			stuff[w] = new Item[tilesTall];
 		}
 	}
 
 	@Override
 	public void update() {
-		if(ship.getPlayer().isInputDown(SHOW_INVENTORY)){
+		if (ship.getPlayer().isPressed(SHOW_INVENTORY)) {
 			visible = !visible;
 		}
 	}
@@ -62,7 +62,7 @@ public class Inventory extends ShipComponent {
 			g.drawRoundRect(leftOffset, topOffset, width, height, 2);
 
 			// draw horizontal lines
-			for(int i = 1; i < tilesTall; i++){
+			for (int i = 1; i < tilesTall; i++) {
 				float x1 = leftOffset;
 				float x2 = leftOffset + tilesWide * sizePerTile;
 				float y = topOffset + i * sizePerTile;
@@ -77,13 +77,14 @@ public class Inventory extends ShipComponent {
 			}
 			// draw items
 			Set<Item> items = new HashSet<Item>();
-			for(int invW = 0; invW < stuff.length; invW++){
-				for(int invH = 0; invH < stuff[invW].length; invH++){
+			for (int invW = 0; invW < stuff.length; invW++) {
+				for (int invH = 0; invH < stuff[invW].length; invH++) {
 					Item item = stuff[invW][invH];
-					if(item != null && !items.contains(item)){
+					if (item != null && !items.contains(item)) {
 						items.add(item);
 						Image im = item.getInventoryImage();
-						g.drawImage(im, leftOffset + invW * sizePerTile, topOffset + invH * sizePerTile);
+						g.drawImage(im, leftOffset + invW * sizePerTile,
+								topOffset + invH * sizePerTile);
 					}
 				}
 			}
@@ -94,29 +95,31 @@ public class Inventory extends ShipComponent {
 	/**
 	 * 
 	 * @param item
-	 * @return true if successful, false otherwise (due to space or weight constraints)
+	 * @return true if successful, false otherwise (due to space or weight
+	 *         constraints)
 	 */
 	public boolean put(Item item) {
 		Point<Integer> size = item.getInventorySize();
 		// find a spot that fits
 		boolean foundSpot = false;
 		int foundW = 0, foundH = 0;
-		for(int invW = 0; invW < stuff.length && !foundSpot; invW++){
-			for(int invH = 0; invH < stuff[invW].length && !foundSpot; invH++){
+		for (int invW = 0; invW < stuff.length && !foundSpot; invW++) {
+			for (int invH = 0; invH < stuff[invW].length && !foundSpot; invH++) {
 				// is space taken?
-				if(stuff[invW][invH] == null){
+				if (stuff[invW][invH] == null) {
 					foundSpot = true;
 					foundW = invW;
 					foundH = invH;
-					inner_loop:
-					for(int w = 0; w < size.x; w++){
-						for(int h = 0; h < size.y; h++){
-							if(invW + w >= stuff.length || invH + h >= stuff[invW].length){
+					inner_loop: for (int w = 0; w < size.x; w++) {
+						for (int h = 0; h < size.y; h++) {
+							if (invW + w >= stuff.length
+									|| invH + h >= stuff[invW].length) {
 								foundSpot = false;
-								// part of the item would fall outside the inventory
+								// part of the item would fall outside the
+								// inventory
 								break inner_loop;
 							}
-							if(stuff[invW + w][invH + h] != null){
+							if (stuff[invW + w][invH + h] != null) {
 								foundSpot = false;
 								// selected spot is simply taken
 								break inner_loop;
@@ -126,13 +129,13 @@ public class Inventory extends ShipComponent {
 				}
 			}
 		}
-		if(foundSpot){
-			for(int w = 0; w < size.x; w++){
-				for(int h = 0; h < size.y; h++){
+		if (foundSpot) {
+			for (int w = 0; w < size.x; w++) {
+				for (int h = 0; h < size.y; h++) {
 					stuff[foundW + w][foundH + h] = item;
 				}
 			}
 		}
 		return foundSpot;
-	} 
+	}
 }

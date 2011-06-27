@@ -10,6 +10,10 @@ abstract public class ShipComponent extends Entity {
 	}
 
 	public void setShip(Ship s){
-		this.ship = s;
+		ship = s;
+	}
+	
+	public Ship getShip(){
+		return ship;
 	}
 }

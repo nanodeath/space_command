@@ -1,7 +1,7 @@
 package com.wasome.space_command;
 
 import static com.wasome.space_command.SpaceCommandGame.getInput;
-import static com.wasome.space_command.gui.PlayerInput.*;
+import static com.wasome.space_command.player.PlayerInput.*;
 
 import org.newdawn.fizzy.DynamicBody;
 import org.newdawn.fizzy.Rectangle;
@@ -20,7 +20,7 @@ import com.wasome.space_command.components.Engine;
 import com.wasome.space_command.components.Engine.Direction;
 import com.wasome.space_command.components.Inventory;
 import com.wasome.space_command.data.Point;
-import com.wasome.space_command.gui.Player;
+import com.wasome.space_command.player.Player;
 import com.wasome.space_command.weapons.Gun;
 
 @Component

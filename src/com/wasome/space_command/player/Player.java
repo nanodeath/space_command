@@ -1,14 +1,35 @@
-package com.wasome.space_command.gui;
+package com.wasome.space_command.player;
 
 import static com.wasome.space_command.SpaceCommandGame.getInput;
-import static com.wasome.space_command.gui.PlayerInput.*;
+import static com.wasome.space_command.player.PlayerInput.ACCELERATE;
+import static com.wasome.space_command.player.PlayerInput.EMERGENCY_STOP;
+import static com.wasome.space_command.player.PlayerInput.REVERSE;
+import static com.wasome.space_command.player.PlayerInput.SHOOT_GUNS;
+import static com.wasome.space_command.player.PlayerInput.SHOW_INVENTORY;
+import static com.wasome.space_command.player.PlayerInput.STRAFE_LEFT;
+import static com.wasome.space_command.player.PlayerInput.STRAFE_RIGHT;
+import static com.wasome.space_command.player.PlayerInput.TURN_LEFT;
+import static com.wasome.space_command.player.PlayerInput.TURN_RIGHT;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.newdawn.slick.Color;
+import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 
-public class Player {
+import com.wasome.space_command.Entity;
+import com.wasome.space_command.SpaceCommandGame;
+import com.wasome.space_command.behavior.Visible;
+import com.wasome.space_command.missions.Mission;
+
+@Visible
+public class Player extends Entity {
+	private List<Mission> missions = new ArrayList<Mission>();
+	private int primaryMissionIdx = -1;
+	
 	@SuppressWarnings("serial")
 	public class InvalidKeyException extends RuntimeException {
 		public InvalidKeyException(NoSuchFieldException e) {
@@ -93,6 +114,35 @@ public class Player {
 			if(keyMapping.get(input) == null){
 				throw new KeyNotMappedException(input);
 			}
+		}
+	}
+	
+	public void giveMission(Mission mission){
+		missions.add(mission);
+		if(primaryMissionIdx < 0){
+			primaryMissionIdx = missions.size() - 1;
+		}
+	}
+	
+	@Override
+	public void render() {
+		float x = 100f;
+		float y = 100f;
+		float lineSpacing = 50f;
+		Graphics g = SpaceCommandGame.getGraphics();
+		g.setFont(SpaceCommandGame.FONT);
+		g.setColor(Color.white);
+		for(int i = 0; i < missions.size(); i++){
+			Mission mission = missions.get(i);
+			String display;
+			if(mission.isComplete()){
+				display = "☑";
+			} else {
+				display = "☐";
+			}
+			display += " " + mission.getOneLineSummary();
+			
+			g.drawString(display, x, y + lineSpacing * i);
 		}
 	}
 }

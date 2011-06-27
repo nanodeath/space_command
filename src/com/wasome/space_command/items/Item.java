@@ -3,6 +3,8 @@ package com.wasome.space_command.items;
 import static com.wasome.space_command.SpaceCommandGame.getGraphics;
 import static com.wasome.space_command.SpaceCommandGame.getWorld;
 
+import javax.annotation.Resource;
+
 import org.newdawn.fizzy.Body;
 import org.newdawn.fizzy.CollisionEvent;
 import org.newdawn.fizzy.DynamicBody;
@@ -15,10 +17,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.wasome.space_command.Camera;
 import com.wasome.space_command.Entity;
 import com.wasome.space_command.Ship;
-import com.wasome.space_command.SpaceCommandGame;
 import com.wasome.space_command.behavior.Visible;
 import com.wasome.space_command.components.Inventory;
 import com.wasome.space_command.data.Point;
+import com.wasome.space_command.events.AcquiredItemEvent;
+import com.wasome.space_command.events.Queue;
 
 @Visible
 abstract public class Item extends Entity implements WorldListener {
@@ -29,7 +32,10 @@ abstract public class Item extends Entity implements WorldListener {
 	protected Point<Float> position;
 	protected Point<Float> size;
 	protected Point<Integer> inventorySize;
-	protected Point<Integer> positionInInventory;
+	protected Point<Integer> positionInIqnventory;
+	
+	@Resource(name="mainQueue")
+	private Queue mainQueue;
 
 	@Autowired
 	private Camera camera;
@@ -70,6 +76,7 @@ abstract public class Item extends Entity implements WorldListener {
 		inventory = i;
 		position = null;
 		body.setActive(false);
+		mainQueue.publish(new AcquiredItemEvent(i.getShip(), this));
 	}
 
 	public void dropIntoSpace(Point<Float> worldPosition) {

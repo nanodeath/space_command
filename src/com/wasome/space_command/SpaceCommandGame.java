@@ -1,7 +1,10 @@
 package com.wasome.space_command;
 
+import java.awt.Font;
 import java.util.LinkedHashSet;
 import java.util.Set;
+
+import javax.annotation.Resource;
 
 import org.newdawn.fizzy.World;
 import org.newdawn.slick.AppGameContainer;
@@ -10,6 +13,8 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.UnicodeFont;
+import org.newdawn.slick.font.effects.ColorEffect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.AbstractXmlApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
@@ -19,6 +24,8 @@ import com.wasome.space_command.behavior.Visible;
 import com.wasome.space_command.data.Point;
 import com.wasome.space_command.items.AssortedAmmo;
 import com.wasome.space_command.items.Item;
+import com.wasome.space_command.missions.CollectItemsMission;
+import com.wasome.space_command.player.Player;
 import com.wasome.space_command.util.Timer;
 
 @Component
@@ -40,6 +47,11 @@ public final class SpaceCommandGame extends BasicGame {
 	
 	@Autowired
 	private Timer timer;
+	
+	@Resource(name="player1")
+	private Player player1;
+
+	public static UnicodeFont FONT;
 
 	public SpaceCommandGame() {
 		super("Game");
@@ -75,6 +87,19 @@ public final class SpaceCommandGame extends BasicGame {
 
 	@Override
 	public void init(GameContainer arg0) throws SlickException {
+		// fonts
+		FONT = new UnicodeFont(new Font("Verdana", Font.PLAIN, 16));
+		FONT.addAsciiGlyphs();
+		FONT.addGlyphs(400, 600);
+		//FONT.addGlyphs(Integer.parseInt("2610", 16), Integer.parseInt("2611", 16));// \\Add Glyphs
+		FONT.addGlyphs("☑☐");
+		FONT.getEffects().add(new ColorEffect(java.awt.Color.WHITE));
+		try {
+			FONT.loadGlyphs();
+		} catch (SlickException e) {
+			throw new RuntimeException(e);
+		}
+		
 		world = new World(0f);
 		
 		addToGameWorld(timer);
@@ -93,6 +118,9 @@ public final class SpaceCommandGame extends BasicGame {
 		Item item = spring.getBean(AssortedAmmo.class);
 		item.initializeAtLocation(new Point<Float>(5f, 25f));
 		addToGameWorld(item);
+		
+		player1.giveMission(new CollectItemsMission(AssortedAmmo.class, 1));
+		addToGameWorld(player1);
 	}
 
 	@Override

@@ -9,7 +9,7 @@
 	<context:component-scan base-package="com.wasome" />
 
 
-	<bean id="player1" class="com.wasome.space_command.gui.Player">
+	<bean id="player1" class="com.wasome.space_command.player.Player">
 		<property name="turnLeftKey" value="Q"/>
 		<property name="turnRightKey" value="E"/>
 		<property name="accelerateKey" value="W"/>
@@ -20,4 +20,6 @@
 		<property name="shootGunsKey" value="SPACE"/>
 		<property name="showInventoryKey" value="I"/>
 	</bean>
+	
+	<bean id="mainQueue" class="com.wasome.space_command.events.Queue" />
 </beans>
