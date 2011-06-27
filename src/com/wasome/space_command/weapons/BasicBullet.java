@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import com.wasome.space_command.Camera;
 import com.wasome.space_command.SpaceCommandGame;
+import com.wasome.space_command.behavior.HasBody;
 import com.wasome.space_command.behavior.Visible;
 import com.wasome.space_command.data.Point;
 import com.wasome.space_command.util.Timer;
@@ -19,6 +20,7 @@ import com.wasome.space_command.util.Timer.Task;
 @Component
 @Scope("prototype")
 @Visible
+@HasBody
 public class BasicBullet extends Projectile {
 	@Autowired
 	private Camera camera;

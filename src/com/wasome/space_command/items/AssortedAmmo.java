@@ -10,6 +10,12 @@ import com.wasome.space_command.data.Point;
 @Component
 @Scope("prototype")
 public class AssortedAmmo extends Item {
+	@Override
+	public void initializeAtLocation(Point<Float> world) {
+		super.initializeAtLocation(world);
+		body.setAngularVelocity(0.5f);
+	}
+
 	public AssortedAmmo() throws SlickException {
 		size = new Point<Float>(1.5f, 1.5f);
 		inventorySize = new Point<Integer>(1, 1);
