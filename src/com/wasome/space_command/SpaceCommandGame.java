@@ -17,6 +17,8 @@ import org.springframework.stereotype.Component;
 
 import com.wasome.space_command.behavior.Visible;
 import com.wasome.space_command.data.Point;
+import com.wasome.space_command.items.AssortedAmmo;
+import com.wasome.space_command.items.Item;
 import com.wasome.space_command.util.Timer;
 
 @Component
@@ -79,28 +81,18 @@ public final class SpaceCommandGame extends BasicGame {
 		
 		Space space = spring.getBean(Space.class);
 		addToGameWorld(space);
-//		updatableThings.add(space);
-//		renderableThings.add(space);
 		
 		Ship mainShip = spring.getBean(BasicShip.class);
 		addToGameWorld(mainShip);
 		mainShip.initializeAtLocation(new Point<Float>(25f, 20f));
-//		ships.add(mainShip);
-//		updatableThings.add(mainShip);
-//		renderableThings.add(mainShip);
-		
-//		Ship otherShip = spring.getBean(BasicShip.class);
-//		addToGameWorld(otherShip);
-//		ships.add(otherShip);
-//		updatableThings.add(otherShip);
-//		renderableThings.add(otherShip);
 		
 		Ship mothership = spring.getBean(CatMothership.class);
 		addToGameWorld(mothership);
 		mothership.initializeAtLocation(new Point<Float>(10f, 15f));
-//		ships.add(mothership);
-//		updatableThings.add(mothership);
-//		renderableThings.add(mothership);
+		
+		Item item = spring.getBean(AssortedAmmo.class);
+		item.initializeAtLocation(new Point<Float>(5f, 25f));
+		addToGameWorld(item);
 	}
 
 	@Override
@@ -123,16 +115,7 @@ public final class SpaceCommandGame extends BasicGame {
 		
 		rendering = true;
 		for(Entity entity : renderableThings){
-			Visible visible = entity.getClass().getAnnotation(Visible.class);
-			switch(visible.when()){
-			case ALWAYS:
-				entity.render();
-				break;
-			case CONDITIONALLY:
-				if(entity.shouldRender())
-					entity.render();
-				break;
-			}
+			entity.render();
 		}
 		rendering = false;
 	}
@@ -140,10 +123,10 @@ public final class SpaceCommandGame extends BasicGame {
 	public static void main(String[] args) throws SlickException {
 		AbstractXmlApplicationContext spring = new FileSystemXmlApplicationContext(
 				"config/space_command.xml");
-		SpaceCommandGame foo = spring.getBean(SpaceCommandGame.class);
+		SpaceCommandGame game = spring.getBean(SpaceCommandGame.class);
 		SpaceCommandGame.spring = spring;
 
-		AppGameContainer app = new AppGameContainer(foo);
+		AppGameContainer app = new AppGameContainer(game);
 
 		// Run logic every 20 ms (50 times per second)
 		app.setMinimumLogicUpdateInterval(20);

@@ -24,11 +24,15 @@ public class Timer extends Entity {
 		currentMs = SpaceCommandGame.getGameContainer().getTime();
 		// We only really want to go through the hassle of iterating
 		// if we know there's something to execute
-		if (!onceAlarms.isEmpty() && onceAlarms.firstKey() <= currentMs + threshold) {
+		if (!onceAlarms.isEmpty()
+				&& onceAlarms.firstKey() <= currentMs + threshold) {
 			Iterator<Map.Entry<Long, Task>> it = onceAlarms.entrySet()
 					.iterator();
 			while (it.hasNext()) {
 				Map.Entry<Long, Task> entry = it.next();
+				// We know it's sorted, so we can make this assumption (that the
+				// first key we hit that's past the threshold means all the
+				// remaining keys aren't applicable)
 				if (entry.getKey() > currentMs + threshold) {
 					break;
 				}
@@ -42,7 +46,7 @@ public class Timer extends Entity {
 	public boolean isDestroyed() {
 		return false;
 	}
-	
+
 	public static interface Task {
 		public void executeAlarmTask();
 	}

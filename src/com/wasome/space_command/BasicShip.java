@@ -17,6 +17,7 @@ import com.wasome.space_command.components.BasicEngine;
 import com.wasome.space_command.components.BasicGyroEngine;
 import com.wasome.space_command.components.Engine;
 import com.wasome.space_command.components.Engine.Direction;
+import com.wasome.space_command.components.Inventory;
 import com.wasome.space_command.data.Point;
 import com.wasome.space_command.weapons.Gun;
 
@@ -34,7 +35,11 @@ public class BasicShip extends Ship {
 		size = new Point<Float>(1f, 1f);
 		
 		image = new Image("res/spaceship.png");
+		
 		enableDirectControl();
+		
+		inventory = SpaceCommandGame.spring.getBean(Inventory.class);
+		addComponent(inventory);
 
 		// add rear engines
 		// right engine
@@ -75,6 +80,7 @@ public class BasicShip extends Ship {
 		Gun gun = SpaceCommandGame.spring.getBean(Gun.class);
 		gun.setLocalPosition(new Point<Float>(0f, size.y / 2));
 		addComponent(gun);
+		
 	}
 	
 	@Override

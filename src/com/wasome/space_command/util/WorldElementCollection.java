@@ -3,7 +3,6 @@ package com.wasome.space_command.util;
 import static com.wasome.space_command.SpaceCommandGame.getWorld;
 import static java.util.Collections.unmodifiableSet;
 
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;

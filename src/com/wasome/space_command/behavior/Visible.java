@@ -5,10 +5,4 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface Visible {
-	public VISIBIBILITY when() default VISIBIBILITY.ALWAYS;
-	
-	public enum VISIBIBILITY {
-		ALWAYS,
-		CONDITIONALLY
-	}
 }

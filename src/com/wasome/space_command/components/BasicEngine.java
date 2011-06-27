@@ -9,10 +9,12 @@ import org.springframework.stereotype.Component;
 
 import com.wasome.space_command.Camera;
 import com.wasome.space_command.SpaceCommandGame;
+import com.wasome.space_command.behavior.Visible;
 import com.wasome.space_command.data.Point;
 
 @Component
 @Scope("prototype")
+@Visible
 public class BasicEngine extends Engine {
 	@Autowired
 	private Camera camera;

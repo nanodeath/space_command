@@ -11,6 +11,7 @@ import org.newdawn.slick.Image;
 
 import com.wasome.space_command.components.Engine;
 import com.wasome.space_command.components.Engine.Direction;
+import com.wasome.space_command.components.Inventory;
 import com.wasome.space_command.data.Point;
 import com.wasome.space_command.flight_plan.FlightPlan;
 import com.wasome.space_command.flight_plan.OrientTowardsPoint;
@@ -23,6 +24,7 @@ public abstract class Ship extends Entity {
 	protected boolean directControlEnabled;
 	protected Body<Ship> body;
 	protected Point<Float> size;
+	protected Inventory inventory;
 
 	public void updateComponents() {
 		components.update();
@@ -191,5 +193,9 @@ public abstract class Ship extends Entity {
 
 	public void initializeAtLocation(Point<Float> point) {
 		
+	}
+
+	public Inventory getInventory() {
+		return inventory;
 	}
 }

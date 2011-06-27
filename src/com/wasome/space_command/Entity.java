@@ -3,7 +3,7 @@ package com.wasome.space_command;
 import org.newdawn.fizzy.Body;
 import org.newdawn.slick.Image;
 
-public class Entity {
+abstract public class Entity {
 	protected Image image;
 	public void setImage(Image image){
 		this.image = image;
@@ -17,15 +17,11 @@ public class Entity {
 		SpaceCommandGame.addToGameWorld(this);
 	}
 	
-	public boolean shouldRender(){
-		return true;
-	}
-	
 	public boolean isDestroyed(){
 		return false;
 	}
 	
-	protected Body<?> body;
+	protected Body body;
 	public Body<?> getBody(){
 		return body;
 	}
