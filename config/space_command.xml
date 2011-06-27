@@ -5,7 +5,19 @@
            http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
            http://www.springframework.org/schema/context
            http://www.springframework.org/schema/context/spring-context-3.0.xsd"
-    default-init-method="init"
-    default-lazy-init="true">
+	default-init-method="init" default-lazy-init="true">
 	<context:component-scan base-package="com.wasome" />
+
+
+	<bean id="player1" class="com.wasome.space_command.gui.Player">
+		<property name="turnLeftKey" value="Q"/>
+		<property name="turnRightKey" value="E"/>
+		<property name="accelerateKey" value="W"/>
+		<property name="reverseKey" value="S"/>
+		<property name="strafeLeftKey" value="A"/>
+		<property name="strafeRightKey" value="D"/>
+		<property name="emergencyStopKey" value="G"/>
+		<property name="shootGunsKey" value="SPACE"/>
+		<property name="showInventoryKey" value="I"/>
+	</bean>
 </beans>

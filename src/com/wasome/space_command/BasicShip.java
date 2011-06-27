@@ -1,6 +1,7 @@
 package com.wasome.space_command;
 
 import static com.wasome.space_command.SpaceCommandGame.getInput;
+import static com.wasome.space_command.gui.PlayerInput.*;
 
 import org.newdawn.fizzy.DynamicBody;
 import org.newdawn.fizzy.Rectangle;
@@ -19,6 +20,7 @@ import com.wasome.space_command.components.Engine;
 import com.wasome.space_command.components.Engine.Direction;
 import com.wasome.space_command.components.Inventory;
 import com.wasome.space_command.data.Point;
+import com.wasome.space_command.gui.Player;
 import com.wasome.space_command.weapons.Gun;
 
 @Component
@@ -33,11 +35,11 @@ public class BasicShip extends Ship {
 	public BasicShip() throws SlickException {
 		super();
 		size = new Point<Float>(1f, 1f);
-		
+
 		image = new Image("res/spaceship.png");
-		
+
 		enableDirectControl();
-		
+
 		inventory = SpaceCommandGame.spring.getBean(Inventory.class);
 		addComponent(inventory);
 
@@ -75,14 +77,16 @@ public class BasicShip extends Ship {
 		Engine gyroEngine = SpaceCommandGame.spring
 				.getBean(BasicGyroEngine.class);
 		addComponent(gyroEngine);
-		
+
 		// adding weapons
 		Gun gun = SpaceCommandGame.spring.getBean(Gun.class);
 		gun.setLocalPosition(new Point<Float>(0f, size.y / 2));
 		addComponent(gun);
 		
+		player = SpaceCommandGame.spring.getBean("player1", Player.class);
+		player.validateAllKeysAssigned();
 	}
-	
+
 	@Override
 	public void initializeAtLocation(Point<Float> position) {
 		Shape shape = new Rectangle(size.x, size.y);
@@ -101,31 +105,31 @@ public class BasicShip extends Ship {
 	public void update() {
 		updateComponents();
 		performFlightPlan();
-		if (directControlEnabled) {
+		if (directControlEnabled && player != null) {
 			Input input = getInput();
-			if (input.isKeyDown(Input.KEY_Q)) {
+			if (player.isInputDown(TURN_LEFT)) {
 				turnCounterClockwise();
 				turningCCW = true;
 			} else if (turningCCW) {
 				stopTurning();
 				turningCCW = false;
 			}
-			if (input.isKeyDown(Input.KEY_E)) {
+			if (player.isInputDown(TURN_RIGHT)) {
 				turnClockwise();
 				turningCW = true;
-			} else if(turningCW) {
+			} else if (turningCW) {
 				stopTurning();
 				turningCW = false;
 			}
 
-			if (input.isKeyDown(Input.KEY_W)) {
+			if (player.isInputDown(ACCELERATE)) {
 				accelerate();
 				accelerating = true;
 			} else if (accelerating) {
 				stopAccelerating();
 				accelerating = false;
 			}
-			if (input.isKeyDown(Input.KEY_S)) {
+			if (player.isInputDown(REVERSE)) {
 				reverse();
 				reversing = true;
 			} else if (reversing) {
@@ -133,7 +137,7 @@ public class BasicShip extends Ship {
 				reversing = false;
 			}
 
-			if (input.isKeyDown(Input.KEY_A)) {
+			if (player.isInputDown(STRAFE_LEFT)) {
 				turnEnginesOnOff(Direction.STARBOARD, Direction.PORT);
 				acceleratingLeft = true;
 			} else if (acceleratingLeft) {
@@ -141,7 +145,7 @@ public class BasicShip extends Ship {
 				acceleratingLeft = false;
 			}
 
-			if (input.isKeyDown(Input.KEY_D)) {
+			if (player.isInputDown(STRAFE_RIGHT)) {
 				turnEnginesOnOff(Direction.PORT, Direction.STARBOARD);
 				acceleratingRight = true;
 			} else if (acceleratingRight) {
@@ -149,7 +153,7 @@ public class BasicShip extends Ship {
 				acceleratingRight = false;
 			}
 
-			if (input.isKeyDown(Input.KEY_G)) {
+			if (player.isInputDown(EMERGENCY_STOP)) {
 				body.setVelocity(0f, 0f);
 				body.setAngularVelocity(0f);
 			}

@@ -15,6 +15,7 @@ import com.wasome.space_command.components.Inventory;
 import com.wasome.space_command.data.Point;
 import com.wasome.space_command.flight_plan.FlightPlan;
 import com.wasome.space_command.flight_plan.OrientTowardsPoint;
+import com.wasome.space_command.gui.Player;
 import com.wasome.space_command.util.CollectionUtil;
 import com.wasome.space_command.util.WorldElementCollection;
 
@@ -25,6 +26,7 @@ public abstract class Ship extends Entity {
 	protected Body<Ship> body;
 	protected Point<Float> size;
 	protected Inventory inventory;
+	protected Player player;
 
 	public void updateComponents() {
 		components.update();
@@ -197,5 +199,9 @@ public abstract class Ship extends Entity {
 
 	public Inventory getInventory() {
 		return inventory;
+	}
+	
+	public Player getPlayer(){
+		return player;
 	}
 }

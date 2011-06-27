@@ -1,7 +1,7 @@
 package com.wasome.space_command.components;
 
 import static com.wasome.space_command.SpaceCommandGame.getGraphics;
-import static com.wasome.space_command.SpaceCommandGame.getInput;
+import static com.wasome.space_command.gui.PlayerInput.SHOW_INVENTORY;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -9,7 +9,6 @@ import java.util.Set;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
-import org.newdawn.slick.Input;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -40,7 +39,7 @@ public class Inventory extends ShipComponent {
 
 	@Override
 	public void update() {
-		if (getInput().isKeyPressed(Input.KEY_I)) {
+		if(ship.getPlayer().isInputDown(SHOW_INVENTORY)){
 			visible = !visible;
 		}
 	}
