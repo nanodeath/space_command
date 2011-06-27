@@ -1,5 +1,7 @@
 package com.wasome.space_command.weapons;
 
+import static com.wasome.space_command.SpaceCommandGame.getGraphics;
+
 import org.newdawn.fizzy.DynamicBody;
 import org.newdawn.fizzy.Rectangle;
 import org.newdawn.fizzy.Shape;
@@ -10,7 +12,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.wasome.space_command.Camera;
-import com.wasome.space_command.SpaceCommandGame;
 import com.wasome.space_command.behavior.HasBody;
 import com.wasome.space_command.behavior.Visible;
 import com.wasome.space_command.data.Point;
@@ -28,7 +29,7 @@ public class BasicBullet extends Projectile {
 	@Autowired
 	private Timer timer;
 	
-	private Point<Float> size = new Point<Float>(0.1f, 0.1f); 
+	private static final Point<Float> size = new Point<Float>(0.1f, 0.1f); 
 	private Point<Float> screenSize;
 	
 	@Override
@@ -42,7 +43,7 @@ public class BasicBullet extends Projectile {
 
 	@Override
 	public void render() {
-		Graphics g = SpaceCommandGame.getGraphics();
+		Graphics g = getGraphics();
 		Point<Float> screen = camera.worldToScreen(body.getX(), body.getY());
 		g.setColor(Color.white);
 		g.fillRect(screen.x, screen.y, screenSize.x, screenSize.y);
