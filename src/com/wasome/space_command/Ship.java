@@ -2,6 +2,7 @@ package com.wasome.space_command;
 
 import static com.wasome.space_command.util.PointUtil.rotateAbout;
 
+import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -9,7 +10,9 @@ import org.apache.commons.collections.Predicate;
 import org.newdawn.fizzy.Body;
 import org.newdawn.slick.Image;
 
+import com.esotericsoftware.kryo.Kryo;
 import com.wasome.space_command.components.Engine;
+import com.wasome.space_command.components.ShipComponent;
 import com.wasome.space_command.components.Engine.Direction;
 import com.wasome.space_command.components.Inventory;
 import com.wasome.space_command.data.Point;
@@ -19,11 +22,10 @@ import com.wasome.space_command.player.Player;
 import com.wasome.space_command.util.CollectionUtil;
 import com.wasome.space_command.util.WorldElementCollection;
 
-public abstract class Ship extends Entity {
+public abstract class Ship extends Entity implements SentToClient {
 	protected WorldElementCollection components = new WorldElementCollection();
 	protected FlightPlan flightPlan;
 	protected boolean directControlEnabled;
-	protected Body<Ship> body;
 	protected Point<Float> size;
 	protected Inventory inventory;
 	protected Player player;
@@ -193,15 +195,35 @@ public abstract class Ship extends Entity {
 		flightPlan = fp;
 	}
 
-	public void initializeAtLocation(Point<Float> point) {
-		
-	}
-
 	public Inventory getInventory() {
 		return inventory;
 	}
 	
 	public Player getPlayer(){
 		return player;
+	}
+	
+	@Override
+	public void writeObjectData(Kryo kryo, ByteBuffer buffer) {
+		buffer.putFloat(body.getX());
+		buffer.putFloat(body.getY());
+		buffer.putFloat(body.getXVelocity());
+		buffer.putFloat(body.getYVelocity());
+		buffer.putFloat(body.getAngularVelocity());
+		buffer.putFloat(body.getRotation());
+	}
+
+	@Override
+	public void readObjectData(Kryo kryo, ByteBuffer buffer) {
+		float x = buffer.getFloat();
+		float y = buffer.getFloat();
+		if(isNew()){
+			initializeAtLocation(new Point<Float>(x, y));
+		} else {
+			body.setPosition(x, y);	
+		}
+		body.setVelocity(buffer.getFloat(), buffer.getFloat());
+		body.setAngularVelocity(buffer.getFloat());
+		body.setRotation(buffer.getFloat());
 	}
 }

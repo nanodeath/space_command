@@ -1,6 +1,5 @@
 package com.wasome.space_command.player;
 
-import static com.wasome.space_command.SpaceCommandGame.getInput;
 import static com.wasome.space_command.player.PlayerInput.ACCELERATE;
 import static com.wasome.space_command.player.PlayerInput.EMERGENCY_STOP;
 import static com.wasome.space_command.player.PlayerInput.REVERSE;
@@ -21,7 +20,6 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 
 import com.wasome.space_command.Entity;
-import com.wasome.space_command.SpaceCommandGame;
 import com.wasome.space_command.behavior.Visible;
 import com.wasome.space_command.missions.Mission;
 
@@ -102,11 +100,11 @@ public class Player extends Entity {
 	}
 
 	public boolean isInputDown(PlayerInput input) {
-		return getInput().isKeyDown(keyMapping.get(input));
+		return game.getInput().isKeyDown(keyMapping.get(input));
 	}
 
 	public boolean isPressed(PlayerInput input) {
-		return getInput().isKeyPressed(keyMapping.get(input));
+		return game.getInput().isKeyPressed(keyMapping.get(input));
 	}
 	
 	public void validateAllKeysAssigned(){
@@ -129,8 +127,8 @@ public class Player extends Entity {
 		float x = 100f;
 		float y = 100f;
 		float lineSpacing = 50f;
-		Graphics g = SpaceCommandGame.getGraphics();
-		g.setFont(SpaceCommandGame.FONT);
+		Graphics g = game.getGraphics();
+//		g.setFont(Game.FONT);
 		g.setColor(Color.white);
 		for(int i = 0; i < missions.size(); i++){
 			Mission mission = missions.get(i);

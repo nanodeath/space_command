@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/!svn/ver/130/trunk/src/com/esotericsoftware/kryo/compress
+END
+ByteArrayCompressor.java
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/!svn/ver/103/trunk/src/com/esotericsoftware/kryo/compress/ByteArrayCompressor.java
+END
+DeflateCompressor.java
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/!svn/ver/60/trunk/src/com/esotericsoftware/kryo/compress/DeflateCompressor.java
+END
+DeltaCompressor.java
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/!svn/ver/97/trunk/src/com/esotericsoftware/kryo/compress/DeltaCompressor.java
+END
+StreamCompressor.java
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/!svn/ver/29/trunk/src/com/esotericsoftware/kryo/compress/StreamCompressor.java
+END
+Delta.java
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/!svn/ver/130/trunk/src/com/esotericsoftware/kryo/compress/Delta.java
+END
+BlowfishCompressor.java
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/!svn/ver/16/trunk/src/com/esotericsoftware/kryo/compress/BlowfishCompressor.java
+END

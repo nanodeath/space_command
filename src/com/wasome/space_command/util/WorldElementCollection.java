@@ -1,6 +1,5 @@
 package com.wasome.space_command.util;
 
-import static com.wasome.space_command.SpaceCommandGame.getWorld;
 import static java.util.Collections.unmodifiableSet;
 
 import java.util.Iterator;
@@ -42,7 +41,7 @@ public class WorldElementCollection extends Entity {
 				iterator.remove();
 				_renderableThings.remove(updatable);
 				if(updatable.getClass().isAnnotationPresent(HasBody.class)){
-					getWorld().remove(updatable.getBody());
+					game.getWorld().remove(updatable.getBody());
 				}
 			}
 		}

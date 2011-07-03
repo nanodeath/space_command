@@ -1,8 +1,5 @@
 package com.wasome.space_command.items;
 
-import static com.wasome.space_command.SpaceCommandGame.getGraphics;
-import static com.wasome.space_command.SpaceCommandGame.getWorld;
-
 import javax.annotation.Resource;
 
 import org.newdawn.fizzy.Body;
@@ -47,8 +44,8 @@ abstract public class Item extends Entity implements WorldListener {
 		body = new DynamicBody<Item>(shape, world.x, world.y);
 		body.setUserData(this);
 
-		getWorld().add(body);
-		getWorld().addBodyListener(body, this);
+		game.getWorld().add(body);
+		game.getWorld().addBodyListener(body, this);
 	}
 
 	@Override
@@ -59,7 +56,7 @@ abstract public class Item extends Entity implements WorldListener {
 			Image image = spaceImage.copy();
 			image.rotate((float) Math.toDegrees(-body.getRotation()));
 			
-			getGraphics().drawImage(image, screen.x,
+			game.getGraphics().drawImage(image, screen.x,
 					screen.y);
 		}
 	}

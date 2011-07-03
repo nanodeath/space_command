@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 23
+/svn/!svn/ver/152/trunk
+END
+license.txt
+K 25
+svn:wc:ra_dav:version-url
+V 34
+/svn/!svn/ver/90/trunk/license.txt
+END
+.classpath
+K 25
+svn:wc:ra_dav:version-url
+V 34
+/svn/!svn/ver/147/trunk/.classpath
+END
+.project
+K 25
+svn:wc:ra_dav:version-url
+V 31
+/svn/!svn/ver/14/trunk/.project
+END
+project.yaml
+K 25
+svn:wc:ra_dav:version-url
+V 36
+/svn/!svn/ver/145/trunk/project.yaml
+END
+pom.xml
+K 25
+svn:wc:ra_dav:version-url
+V 30
+/svn/!svn/ver/94/trunk/pom.xml
+END

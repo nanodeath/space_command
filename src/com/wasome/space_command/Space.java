@@ -1,9 +1,10 @@
 package com.wasome.space_command;
 
-import static com.wasome.space_command.SpaceCommandGame.getGraphics;
-import static com.wasome.space_command.SpaceCommandGame.getInput;
-import static com.wasome.space_command.SpaceCommandGame.getWorld;
+import static com.wasome.space_command.SpaceCommandGameServer.*;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class Space extends Entity {
 
 	@Override
 	public void render() {
-		Graphics g = getGraphics();
+		Graphics g = game.getGraphics();
 		for (Ship ship : selectedShips) {
 			BoundingBox bb = ship.getBody().getBoundingBox();
 			float worldWidth = Math.abs(bb.upperRight.x - bb.lowerLeft.x);
@@ -46,35 +47,34 @@ public class Space extends Entity {
 
 	@Override
 	public void update() {
-		Input input = getInput();
-		if (input.isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
-			int mouseX = input.getMouseX(), mouseY = input.getMouseY();
-			World world = getWorld();
-			Point<Float> worldPoint = camera.screenToWorld(mouseX, mouseY);
-			List<Body<?>> bodies = world.bodiesAt(worldPoint.x, worldPoint.y);
-			List<Ship> ships = new LinkedList<Ship>();
-			for (Body<?> body : bodies) {
-				Object userData = body.getUserData();
-				if (userData instanceof Ship) {
-					ships.add((Ship) userData);
-					break;
-				}
-			}
-			selectedShips.clear();
-			selectedShips.addAll(ships);
-		} else if(input.isMousePressed(Input.MOUSE_RIGHT_BUTTON)){
-			int mouseX = input.getMouseX(), mouseY = input.getMouseY();
-			Point<Float> worldPoint = camera.screenToWorld(mouseX, mouseY);
-			
-			for(Ship selectedShip : selectedShips){
-				selectedShip.goTo(worldPoint);
-			}
-		}
+//		Input input = getInput();
+//		if (input.isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
+////			int mouseX = input.getMouseX(), mouseY = input.getMouseY();
+////			World world = getWorld();
+////			Point<Float> worldPoint = camera.screenToWorld(mouseX, mouseY);
+////			List<Body<?>> bodies = world.bodiesAt(worldPoint.x, worldPoint.y);
+////			List<Ship> ships = new LinkedList<Ship>();
+////			for (Body<?> body : bodies) {
+////				Object userData = body.getUserData();
+////				if (userData instanceof Ship) {
+////					ships.add((Ship) userData);
+////					break;
+////				}
+////			}
+////			selectedShips.clear();
+////			selectedShips.addAll(ships);
+//		} else if(input.isMousePressed(Input.MOUSE_RIGHT_BUTTON)){
+//			int mouseX = input.getMouseX(), mouseY = input.getMouseY();
+//			Point<Float> worldPoint = camera.screenToWorld(mouseX, mouseY);
+//			
+//			for(Ship selectedShip : selectedShips){
+//				selectedShip.goTo(worldPoint);
+//			}
+//		}
 	}
 
 	@Override
 	public boolean isDestroyed() {
 		return false;
 	}
-
 }

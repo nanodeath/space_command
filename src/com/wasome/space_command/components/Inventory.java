@@ -1,6 +1,5 @@
 package com.wasome.space_command.components;
 
-import static com.wasome.space_command.SpaceCommandGame.getGraphics;
 import static com.wasome.space_command.player.PlayerInput.SHOW_INVENTORY;
 
 import java.util.HashSet;
@@ -12,7 +11,6 @@ import org.newdawn.slick.Image;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import com.wasome.space_command.ShipComponent;
 import com.wasome.space_command.behavior.Visible;
 import com.wasome.space_command.data.Point;
 import com.wasome.space_command.items.Item;
@@ -47,7 +45,7 @@ public class Inventory extends ShipComponent {
 	@Override
 	public void render() {
 		if (visible) {
-			Graphics g = getGraphics();
+			Graphics g = game.getGraphics();
 			g.setAntiAlias(true);
 			// draw background
 			Color color = new Color(Color.blue);

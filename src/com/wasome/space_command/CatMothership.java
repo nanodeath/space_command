@@ -29,7 +29,7 @@ public class CatMothership extends Ship {
 		Shape shape = new Circle(size.x / 2);
 		body = new DynamicBody<Ship>(shape, point.x, point.y);
 		body.setUserData(this);
-		SpaceCommandGame.getWorld().add(body);
+		game.getWorld().add(body);
 		body.setAngularVelocity(0.05f);
 	}
 
@@ -42,7 +42,7 @@ public class CatMothership extends Ship {
 		Image image = getImage().copy();
 		float rotation = (float) Math.toDegrees(body.getRotation());
 		image.rotate(-rotation);
-		SpaceCommandGame.getGraphics().drawImage(image, screenPoint.x,
+		game.getGraphics().drawImage(image, screenPoint.x,
 				screenPoint.y);
 	}
 

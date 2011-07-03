@@ -1,7 +1,5 @@
 package com.wasome.space_command.weapons;
 
-import static com.wasome.space_command.SpaceCommandGame.getGraphics;
-
 import org.newdawn.fizzy.DynamicBody;
 import org.newdawn.fizzy.Rectangle;
 import org.newdawn.fizzy.Shape;
@@ -43,7 +41,7 @@ public class BasicBullet extends Projectile {
 
 	@Override
 	public void render() {
-		Graphics g = getGraphics();
+		Graphics g = game.getGraphics();
 		Point<Float> screen = camera.worldToScreen(body.getX(), body.getY());
 		g.setColor(Color.white);
 		g.fillRect(screen.x, screen.y, screenSize.x, screenSize.y);

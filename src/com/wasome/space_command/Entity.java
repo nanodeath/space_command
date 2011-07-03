@@ -1,28 +1,89 @@
 package com.wasome.space_command;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 import org.newdawn.fizzy.Body;
 import org.newdawn.slick.Image;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
-abstract public class Entity {
+import com.wasome.space_command.data.Point;
+
+abstract public class Entity implements ApplicationContextAware {
+	protected ApplicationContext spring;
+	private boolean isNew = true;
+	protected boolean changedInLastUpdate = false;
+
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+		spring = applicationContext;
+	}
+
+	@Autowired
+	protected Game game;
+	
+	@Autowired(required=false)
+	protected SpaceCommandGameClient client;
+
 	protected Image image;
-	public void setImage(Image image){
+
+	public void setImage(Image image) {
 		this.image = image;
 	}
-	
-	public void render(){}
-	
-	public void update(){}
-	
-	public void addToWorld(){
-		SpaceCommandGame.addToGameWorld(this);
+
+	public void render() {
+	}
+
+	public void update() {
+		if (isNew)
+			isNew = false;
+	}
+
+	public void addToWorld() {
+		game.addToGameWorld(this);
 	}
 	
-	public boolean isDestroyed(){
+	public void initializeAtLocation(Point<Float> point) {	
+	}
+
+	public boolean isDestroyed() {
 		return false;
 	}
-	
+
 	protected Body body;
-	public Body<?> getBody(){
+
+	public Body<?> getBody() {
 		return body;
+	}
+
+	public static int ENTITY_ID_COUNTER = 0;
+	protected int entityId = ENTITY_ID_COUNTER++;
+
+	public int getEntityId() {
+		return entityId;
+	}
+
+	public void setEntityId(int entityId) {
+		this.entityId = entityId;
+	}
+
+	public boolean isNew() {
+		return isNew;
+	}
+
+	public void setIsNew(boolean flag) {
+		isNew = flag;
+	}
+
+	public boolean isChangedInLastUpdate() {
+		return changedInLastUpdate;
+	}
+
+	public void setChangedInLastUpdate(boolean changedInLastUpdate) {
+		this.changedInLastUpdate = changedInLastUpdate;
 	}
 }

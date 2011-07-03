@@ -1,13 +1,8 @@
 package com.wasome.space_command;
 
-import static com.wasome.space_command.SpaceCommandGame.getInput;
-import static com.wasome.space_command.player.PlayerInput.*;
-
-import org.newdawn.fizzy.DynamicBody;
 import org.newdawn.fizzy.Rectangle;
 import org.newdawn.fizzy.Shape;
 import org.newdawn.slick.Image;
-import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -40,123 +35,126 @@ public class BasicShip extends Ship {
 
 		enableDirectControl();
 
-		inventory = SpaceCommandGame.spring.getBean(Inventory.class);
-		addComponent(inventory);
+	}
 
-		// add rear engines
-		// right engine
-		Engine rightEngine = SpaceCommandGame.spring.getBean(BasicEngine.class);
-		rightEngine.setFacingDirection(Direction.STERN);
-		rightEngine
-				.setLocalPosition(new Point<Float>(size.x / 2f, -size.y / 2));
-		addComponent(rightEngine);
+	public void init() {
+		if (game.isServer()) {
+			inventory = spring.getBean(Inventory.class);
+			addComponent(inventory);
 
-		// left engine
-		Engine leftEngine = SpaceCommandGame.spring.getBean(BasicEngine.class);
-		leftEngine.setFacingDirection(Direction.STERN);
-		leftEngine
-				.setLocalPosition(new Point<Float>(-size.x / 2f, -size.y / 2));
-		addComponent(leftEngine);
+			// add rear engines
+			// right engine
+			Engine rightEngine = spring.getBean(BasicEngine.class);
+			rightEngine.setFacingDirection(Direction.STERN);
+			rightEngine.setLocalPosition(new Point<Float>(size.x / 2f, -size.y / 2));
+			addComponent(rightEngine);
 
-		// adding lateral engines
-		// right engine
-		Engine rightLateralEngine = SpaceCommandGame.spring
-				.getBean(BasicEngine.class);
-		rightLateralEngine.setFacingDirection(Direction.STARBOARD);
-		rightLateralEngine.setLocalPosition(new Point<Float>(size.x / 2f, 0f));
-		addComponent(rightLateralEngine);
+			// left engine
+			Engine leftEngine = spring.getBean(BasicEngine.class);
+			leftEngine.setFacingDirection(Direction.STERN);
+			leftEngine.setLocalPosition(new Point<Float>(-size.x / 2f, -size.y / 2));
+			addComponent(leftEngine);
 
-		// left engine
-		Engine leftLateralEngine = SpaceCommandGame.spring
-				.getBean(BasicEngine.class);
-		leftLateralEngine.setFacingDirection(Direction.PORT);
-		leftLateralEngine.setLocalPosition(new Point<Float>(-size.x / 2f, 0f));
-		addComponent(leftLateralEngine);
+			// adding lateral engines
+			// right engine
+			Engine rightLateralEngine = spring.getBean(BasicEngine.class);
+			rightLateralEngine.setFacingDirection(Direction.STARBOARD);
+			rightLateralEngine.setLocalPosition(new Point<Float>(size.x / 2f, 0f));
+			addComponent(rightLateralEngine);
 
-		// adding gyro
-		Engine gyroEngine = SpaceCommandGame.spring
-				.getBean(BasicGyroEngine.class);
-		addComponent(gyroEngine);
+			// left engine
+			Engine leftLateralEngine = spring.getBean(BasicEngine.class);
+			leftLateralEngine.setFacingDirection(Direction.PORT);
+			leftLateralEngine.setLocalPosition(new Point<Float>(-size.x / 2f, 0f));
+			addComponent(leftLateralEngine);
 
-		// adding weapons
-		Gun gun = SpaceCommandGame.spring.getBean(Gun.class);
-		gun.setLocalPosition(new Point<Float>(0f, size.y / 2));
-		addComponent(gun);
-		
-		player = SpaceCommandGame.spring.getBean("player1", Player.class);
+			// adding gyro
+			Engine gyroEngine = spring.getBean(BasicGyroEngine.class);
+			addComponent(gyroEngine);
+
+			// adding weapons
+			Gun gun = spring.getBean(Gun.class);
+			gun.setLocalPosition(new Point<Float>(0f, size.y / 2));
+			addComponent(gun);
+
+			for (Entity component : components.updatableElements) {
+				game.addToGameWorld(component);
+			}
+		}
+		player = spring.getBean("player1", Player.class);
 		player.validateAllKeysAssigned();
 	}
 
 	@Override
 	public void initializeAtLocation(Point<Float> position) {
 		Shape shape = new Rectangle(size.x, size.y);
-		body = new DynamicBody<Ship>(shape, 20f, 25f);
+		body = game.bodyFactory.createDynamicBody(this, shape, position.x, position.y);
 		body.setUserData(this);
 		body.setAngularDamping(0.5f);
-
-		SpaceCommandGame.getWorld().add(body);
+		game.getWorld().add(body);
 	}
 
-	private boolean accelerating = false, reversing = false,
-			acceleratingRight = false, acceleratingLeft = false,
-			turningCCW = false, turningCW = false;
+	private boolean accelerating = false, reversing = false, acceleratingRight = false, acceleratingLeft = false, turningCCW = false, turningCW = false;
 
 	@Override
 	public void update() {
-		updateComponents();
+		// updateComponents();
 		performFlightPlan();
 		if (directControlEnabled && player != null) {
-			Input input = getInput();
-			if (player.isInputDown(TURN_LEFT)) {
-				turnCounterClockwise();
-				turningCCW = true;
-			} else if (turningCCW) {
-				stopTurning();
-				turningCCW = false;
+			ClientState state = SpaceCommandGameServer.clientStates.get(1);
+			if (state == null) {
+				return;
 			}
-			if (player.isInputDown(TURN_RIGHT)) {
-				turnClockwise();
-				turningCW = true;
-			} else if (turningCW) {
-				stopTurning();
-				turningCW = false;
-			}
-
-			if (player.isInputDown(ACCELERATE)) {
+			// if (input.isInputDown(TURN_LEFT)) {
+			// turnCounterClockwise();
+			// turningCCW = true;
+			// } else if (turningCCW) {
+			// stopTurning();
+			// turningCCW = false;
+			// }
+			// if (input.isInputDown(TURN_RIGHT)) {
+			// turnClockwise();
+			// turningCW = true;
+			// } else if (turningCW) {
+			// stopTurning();
+			// turningCW = false;
+			// }
+			//
+			if (state.isAccelerating) {
 				accelerate();
 				accelerating = true;
 			} else if (accelerating) {
 				stopAccelerating();
 				accelerating = false;
 			}
-			if (player.isInputDown(REVERSE)) {
-				reverse();
-				reversing = true;
-			} else if (reversing) {
-				stopReversing();
-				reversing = false;
-			}
-
-			if (player.isInputDown(STRAFE_LEFT)) {
-				turnEnginesOnOff(Direction.STARBOARD, Direction.PORT);
-				acceleratingLeft = true;
-			} else if (acceleratingLeft) {
-				turnEnginesOnOff(null, Direction.STARBOARD);
-				acceleratingLeft = false;
-			}
-
-			if (player.isInputDown(STRAFE_RIGHT)) {
-				turnEnginesOnOff(Direction.PORT, Direction.STARBOARD);
-				acceleratingRight = true;
-			} else if (acceleratingRight) {
-				turnEnginesOnOff(null, Direction.PORT);
-				acceleratingRight = false;
-			}
-
-			if (player.isInputDown(EMERGENCY_STOP)) {
-				body.setVelocity(0f, 0f);
-				body.setAngularVelocity(0f);
-			}
+			// if (input.isInputDown(REVERSE)) {
+			// reverse();
+			// reversing = true;
+			// } else if (reversing) {
+			// stopReversing();
+			// reversing = false;
+			// }
+			//
+			// if (input.isInputDown(STRAFE_LEFT)) {
+			// turnEnginesOnOff(Direction.STARBOARD, Direction.PORT);
+			// acceleratingLeft = true;
+			// } else if (acceleratingLeft) {
+			// turnEnginesOnOff(null, Direction.STARBOARD);
+			// acceleratingLeft = false;
+			// }
+			//
+			// if (input.isInputDown(STRAFE_RIGHT)) {
+			// turnEnginesOnOff(Direction.PORT, Direction.STARBOARD);
+			// acceleratingRight = true;
+			// } else if (acceleratingRight) {
+			// turnEnginesOnOff(null, Direction.PORT);
+			// acceleratingRight = false;
+			// }
+			//
+			// if (input.isInputDown(EMERGENCY_STOP)) {
+			// body.setVelocity(0f, 0f);
+			// body.setAngularVelocity(0f);
+			// }
 		}
 	}
 
@@ -164,13 +162,11 @@ public class BasicShip extends Ship {
 	public void render() {
 		renderComponents();
 
-		Point<Float> screenPoint = camera.worldToScreenCorner(body.getX(),
-				body.getY(), size.x, size.y);
+		Point<Float> screenPoint = camera.worldToScreenCorner(body.getX(), body.getY(), size.x, size.y);
 		Image image = getImage().copy();
 		float rotation = (float) Math.toDegrees(body.getRotation());
 		image.rotate(-rotation);
-		SpaceCommandGame.getGraphics().drawImage(image, screenPoint.x,
-				screenPoint.y);
+		game.getGraphics().drawImage(image, screenPoint.x, screenPoint.y);
 	}
 
 	@Override
@@ -182,4 +178,5 @@ public class BasicShip extends Ship {
 	public boolean isDestroyed() {
 		return false;
 	}
+
 }

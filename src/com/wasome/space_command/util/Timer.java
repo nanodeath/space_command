@@ -7,7 +7,8 @@ import java.util.TreeMap;
 import org.springframework.stereotype.Component;
 
 import com.wasome.space_command.Entity;
-import com.wasome.space_command.SpaceCommandGame;
+import com.wasome.space_command.Game;
+import com.wasome.space_command.SpaceCommandGameServer;
 
 @Component
 public class Timer extends Entity {
@@ -21,7 +22,7 @@ public class Timer extends Entity {
 
 	@Override
 	public void update() {
-		currentMs = SpaceCommandGame.getGameContainer().getTime();
+		currentMs = game.getGameContainer().getTime();
 		// We only really want to go through the hassle of iterating
 		// if we know there's something to execute
 		if (!onceAlarms.isEmpty()

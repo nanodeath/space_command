@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/!svn/ver/144/trunk/test/com/esotericsoftware/kryo/serialize
+END
+BeanSerializerTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/!svn/ver/97/trunk/test/com/esotericsoftware/kryo/serialize/BeanSerializerTest.java
+END
+SerializerTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/!svn/ver/143/trunk/test/com/esotericsoftware/kryo/serialize/SerializerTest.java
+END
+ReferenceFieldSerializerTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/!svn/ver/102/trunk/test/com/esotericsoftware/kryo/serialize/ReferenceFieldSerializerTest.java
+END
+FieldSerializerTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/!svn/ver/144/trunk/test/com/esotericsoftware/kryo/serialize/FieldSerializerTest.java
+END
+CompatibleFieldSerializerTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/!svn/ver/97/trunk/test/com/esotericsoftware/kryo/serialize/CompatibleFieldSerializerTest.java
+END

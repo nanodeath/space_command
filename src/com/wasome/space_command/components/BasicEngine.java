@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.wasome.space_command.Camera;
-import com.wasome.space_command.SpaceCommandGame;
 import com.wasome.space_command.behavior.Visible;
 import com.wasome.space_command.data.Point;
 
@@ -32,7 +31,7 @@ public class BasicEngine extends Engine {
 	public void render() {
 		// Draw engine circle
 		Point<Float> rotatedPosition = calculateWorldEngineLocation();
-		Graphics g = SpaceCommandGame.getGraphics();
+		Graphics g = game.getGraphics();
 		g.setColor(Color.red);
 		Point<Float> rotatedScreen = camera.worldToScreen(rotatedPosition.x, rotatedPosition.y);
 		g.fill(new Circle(rotatedScreen.x, rotatedScreen.y, 10f));

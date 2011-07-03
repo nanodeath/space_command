@@ -22,4 +22,5 @@
 	</bean>
 	
 	<bean id="mainQueue" class="com.wasome.space_command.events.Queue" />
+	<bean id="kryo" class="com.esotericsoftware.kryo.Kryo" />
 </beans>

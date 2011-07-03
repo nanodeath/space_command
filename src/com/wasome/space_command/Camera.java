@@ -1,5 +1,6 @@
 package com.wasome.space_command;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -15,11 +16,16 @@ public class Camera {
 	 * By what factor is a screen unit larger than a world unit?
 	 */
 	private float scale = 32f;
+	
+	@Autowired
+	private Game game;
 
 	public Camera() {
-		float worldHeight = 32f;
-		screenHeight = scaleWorldToScreen(0f, worldHeight).y;
 		x = y = 0f;
+	}
+	
+	public void init(){
+		screenHeight = game.gameContainer.getHeight();
 	}
 
 	/**

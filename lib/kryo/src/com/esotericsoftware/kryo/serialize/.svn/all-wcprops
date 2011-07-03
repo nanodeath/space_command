@@ -1,0 +1,149 @@
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/!svn/ver/152/trunk/src/com/esotericsoftware/kryo/serialize
+END
+ClassSerializer.java
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/!svn/ver/130/trunk/src/com/esotericsoftware/kryo/serialize/ClassSerializer.java
+END
+FloatSerializer.java
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/!svn/ver/137/trunk/src/com/esotericsoftware/kryo/serialize/FloatSerializer.java
+END
+BeanSerializer.java
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/!svn/ver/113/trunk/src/com/esotericsoftware/kryo/serialize/BeanSerializer.java
+END
+SerializableSerializer.java
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/!svn/ver/83/trunk/src/com/esotericsoftware/kryo/serialize/SerializableSerializer.java
+END
+StringSerializer.java
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/!svn/ver/96/trunk/src/com/esotericsoftware/kryo/serialize/StringSerializer.java
+END
+DoubleSerializer.java
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/!svn/ver/137/trunk/src/com/esotericsoftware/kryo/serialize/DoubleSerializer.java
+END
+CustomSerializer.java
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/!svn/ver/92/trunk/src/com/esotericsoftware/kryo/serialize/CustomSerializer.java
+END
+CharSerializer.java
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/!svn/ver/29/trunk/src/com/esotericsoftware/kryo/serialize/CharSerializer.java
+END
+DateSerializer.java
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/!svn/ver/73/trunk/src/com/esotericsoftware/kryo/serialize/DateSerializer.java
+END
+MapSerializer.java
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/!svn/ver/92/trunk/src/com/esotericsoftware/kryo/serialize/MapSerializer.java
+END
+ArraySerializer.java
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/!svn/ver/59/trunk/src/com/esotericsoftware/kryo/serialize/ArraySerializer.java
+END
+BigIntegerSerializer.java
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/!svn/ver/73/trunk/src/com/esotericsoftware/kryo/serialize/BigIntegerSerializer.java
+END
+BooleanSerializer.java
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/!svn/ver/29/trunk/src/com/esotericsoftware/kryo/serialize/BooleanSerializer.java
+END
+BigDecimalSerializer.java
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/!svn/ver/73/trunk/src/com/esotericsoftware/kryo/serialize/BigDecimalSerializer.java
+END
+FieldSerializer.java
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/!svn/ver/144/trunk/src/com/esotericsoftware/kryo/serialize/FieldSerializer.java
+END
+CompatibleFieldSerializer.java
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/!svn/ver/139/trunk/src/com/esotericsoftware/kryo/serialize/CompatibleFieldSerializer.java
+END
+SimpleSerializer.java
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/!svn/ver/14/trunk/src/com/esotericsoftware/kryo/serialize/SimpleSerializer.java
+END
+IntSerializer.java
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/!svn/ver/152/trunk/src/com/esotericsoftware/kryo/serialize/IntSerializer.java
+END
+CollectionSerializer.java
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/!svn/ver/92/trunk/src/com/esotericsoftware/kryo/serialize/CollectionSerializer.java
+END
+ShortSerializer.java
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/!svn/ver/29/trunk/src/com/esotericsoftware/kryo/serialize/ShortSerializer.java
+END
+LongSerializer.java
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/!svn/ver/149/trunk/src/com/esotericsoftware/kryo/serialize/LongSerializer.java
+END
+ReferenceFieldSerializer.java
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/!svn/ver/101/trunk/src/com/esotericsoftware/kryo/serialize/ReferenceFieldSerializer.java
+END
+ByteSerializer.java
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/!svn/ver/29/trunk/src/com/esotericsoftware/kryo/serialize/ByteSerializer.java
+END
+EnumSerializer.java
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/!svn/ver/140/trunk/src/com/esotericsoftware/kryo/serialize/EnumSerializer.java
+END

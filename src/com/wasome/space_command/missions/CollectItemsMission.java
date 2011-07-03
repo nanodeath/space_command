@@ -3,7 +3,6 @@ package com.wasome.space_command.missions;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import com.wasome.space_command.SpaceCommandGame;
 import com.wasome.space_command.events.AcquiredItemEvent;
 import com.wasome.space_command.events.Event;
 import com.wasome.space_command.events.Queue;
@@ -24,7 +23,10 @@ public class CollectItemsMission extends Mission implements QueueListener {
 		this.count = 0;
 		this.countGoal = countGoal;
 		finished = false;
-		mainQueue = SpaceCommandGame.spring.getBean("mainQueue", Queue.class);
+	}
+	
+	public void init(){
+		mainQueue = spring.getBean("mainQueue", Queue.class);
 		mainQueue.addListener(AcquiredItemEvent.class, this);
 	}
 
