@@ -75,6 +75,8 @@ public abstract class Engine extends ShipComponent implements SentToClient {
 	}
 
 	public Engine() {
+			//setZIndex((float) (-1*Math.random()));
+		setZIndex(-1f);
 	}
 
 	public Engine(Direction d) {

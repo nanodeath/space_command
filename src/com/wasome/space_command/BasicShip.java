@@ -101,7 +101,7 @@ public class BasicShip extends Ship {
 		// updateComponents();
 		performFlightPlan();
 		if (directControlEnabled && player != null) {
-			ClientState state = SpaceCommandGameServer.clientStates.get(1);
+			ClientState state = GameServer.clientStates.get(1);
 			if (state == null) {
 				return;
 			}

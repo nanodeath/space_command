@@ -17,7 +17,7 @@ import org.newdawn.fizzy.Shape;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.wasome.space_command.Entity;
-import com.wasome.space_command.SpaceCommandGameServer;
+import com.wasome.space_command.GameServer;
 
 public class ServerBodyFactory implements BodyFactory {
 	private Map<Body<?>, Entity> bodyToEntityMap = new ConcurrentHashMap<Body<?>, Entity>();
@@ -25,7 +25,7 @@ public class ServerBodyFactory implements BodyFactory {
 
 	private final Enhancer dynamicBodyEnhancer;
 	@Autowired
-	private SpaceCommandGameServer game;
+	private GameServer game;
 
 	{
 		dynamicBodyEnhancer = new Enhancer();

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 import com.wasome.space_command.Entity;
 import com.wasome.space_command.Game;
-import com.wasome.space_command.SpaceCommandGameServer;
+import com.wasome.space_command.GameServer;
 
 @Component
 public class Timer extends Entity {

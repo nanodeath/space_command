@@ -1,6 +1,6 @@
 package com.wasome.space_command;
 
-import static com.wasome.space_command.SpaceCommandGameServer.*;
+import static com.wasome.space_command.GameServer.*;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

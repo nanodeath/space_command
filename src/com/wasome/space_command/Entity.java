@@ -1,9 +1,5 @@
 package com.wasome.space_command;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-
 import org.newdawn.fizzy.Body;
 import org.newdawn.slick.Image;
 import org.springframework.beans.BeansException;
@@ -17,6 +13,7 @@ abstract public class Entity implements ApplicationContextAware {
 	protected ApplicationContext spring;
 	private boolean isNew = true;
 	protected boolean changedInLastUpdate = false;
+	private float zIndex = 0f;
 
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -27,7 +24,7 @@ abstract public class Entity implements ApplicationContextAware {
 	protected Game game;
 	
 	@Autowired(required=false)
-	protected SpaceCommandGameClient client;
+	protected GameClient client;
 
 	protected Image image;
 
@@ -85,5 +82,17 @@ abstract public class Entity implements ApplicationContextAware {
 
 	public void setChangedInLastUpdate(boolean changedInLastUpdate) {
 		this.changedInLastUpdate = changedInLastUpdate;
+	}
+
+	public float getZIndex() {
+		return zIndex;
+	}
+
+	/**
+	 * Sets the zIndex of this element after it's been added to an ordered set.
+	 * @param zIndex
+	 */
+	public void setZIndex(float zIndex) {
+		this.zIndex = zIndex;
 	}
 }

@@ -28,7 +28,7 @@ import com.wasome.space_command.data.Point;
 import com.wasome.space_command.server.ClientUpdate;
 import com.wasome.space_command.server.WorldSync;
 
-public class SpaceCommandGameServer extends Game {
+public class GameServer extends Game {
 	@Autowired
 	protected Server server;
 
@@ -38,7 +38,7 @@ public class SpaceCommandGameServer extends Game {
 
 	public static UnicodeFont FONT;
 
-	public SpaceCommandGameServer() {
+	public GameServer() {
 		super("Sup bitches");
 	}
 
@@ -143,7 +143,7 @@ public class SpaceCommandGameServer extends Game {
 
 	public static void main(String[] args) throws SlickException {
 		AbstractXmlApplicationContext spring = new FileSystemXmlApplicationContext("config/space_command.server.xml");
-		SpaceCommandGameServer game = spring.getBean(SpaceCommandGameServer.class);
+		GameServer game = spring.getBean(GameServer.class);
 
 		AppGameContainer app = new AppGameContainer(game);
 		app.setUpdateOnlyWhenVisible(false);

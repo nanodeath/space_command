@@ -7,7 +7,7 @@ import java.util.Set;
 import org.springframework.context.ApplicationContext;
 
 import com.wasome.space_command.Entity;
-import com.wasome.space_command.SpaceCommandGameClient;
+import com.wasome.space_command.GameClient;
 
 public class WorldSync implements ServerMessage {
 	public List<ClientUpdate> clientUpdates;
@@ -18,7 +18,7 @@ public class WorldSync implements ServerMessage {
 	}
 	
 	@Override
-	public void process(ApplicationContext context, SpaceCommandGameClient client) {
+	public void process(ApplicationContext context, GameClient client) {
 		Set<Entity> newEntities = new HashSet<Entity>();
 		for(ClientUpdate clientUpdate : clientUpdates){
 			Entity e = client.getOrCreateEntity(clientUpdate.entityId, clientUpdate.getEntityClass());

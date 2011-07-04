@@ -29,6 +29,10 @@ public abstract class Ship extends Entity implements SentToClient {
 	protected Point<Float> size;
 	protected Inventory inventory;
 	protected Player player;
+	
+	{
+		setZIndex(0);
+	}
 
 	public void updateComponents() {
 		components.update();

@@ -3,11 +3,9 @@ package com.wasome.space_command;
 import static java.lang.System.currentTimeMillis;
 
 import java.io.IOException;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.annotation.Resource;
@@ -29,12 +27,12 @@ import com.wasome.space_command.player.Player;
 import com.wasome.space_command.server.ServerMessage;
 import com.wasome.space_command.util.Timer;
 
-public class SpaceCommandGameClient extends Game {
+public class GameClient extends Game {
 	@Autowired
 	private Client client;
 	private ClientState previousState;
 
-	private static final Set<Entity> renderableThings = new LinkedHashSet<Entity>();
+	private static final Set<Entity> renderableThings = new TreeSet<Entity>(new ZIndexEntityComparator());
 	private final Queue<ServerMessage> serverUpdates = new ConcurrentLinkedQueue<ServerMessage>();
 
 	@Autowired
@@ -45,7 +43,7 @@ public class SpaceCommandGameClient extends Game {
 
 	public static UnicodeFont FONT;
 
-	public SpaceCommandGameClient() {
+	public GameClient() {
 		super("Sup bitches");
 	}
 
@@ -169,6 +167,7 @@ public class SpaceCommandGameClient extends Game {
 		Entity entity = entities.get(entityId);
 		if(entity == null){
 			entity = spring.getBean(entityClass);
+			entity.setEntityId(entityId);
 			entity.setIsNew(true);
 			entities.put(entityId, entity);
 			updatableThings.add(entity);
