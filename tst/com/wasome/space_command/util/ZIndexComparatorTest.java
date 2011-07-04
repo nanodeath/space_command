@@ -10,7 +10,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.wasome.space_command.Entity;
-import com.wasome.space_command.ZIndexEntityComparator;
 
 public class ZIndexComparatorTest {
 

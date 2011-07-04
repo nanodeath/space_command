@@ -1,7 +1,7 @@
 package com.wasome.space_command.events;
 
-import com.wasome.space_command.Ship;
 import com.wasome.space_command.items.Item;
+import com.wasome.space_command.ships.Ship;
 
 public class AcquiredItemEvent extends Event {
 	public final Ship ship;

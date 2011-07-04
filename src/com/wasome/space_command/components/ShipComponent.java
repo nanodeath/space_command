@@ -1,8 +1,8 @@
 package com.wasome.space_command.components;
 
 import com.wasome.space_command.Entity;
-import com.wasome.space_command.Ship;
 import com.wasome.space_command.data.Point;
+import com.wasome.space_command.ships.Ship;
 
 abstract public class ShipComponent extends Entity {
 	protected Ship ship;

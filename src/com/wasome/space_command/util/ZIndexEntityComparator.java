@@ -1,6 +1,8 @@
-package com.wasome.space_command;
+package com.wasome.space_command.util;
 
 import java.util.Comparator;
+
+import com.wasome.space_command.Entity;
 
 /**
  * Sort entities by their z-index. In the case of a tie, the order is consistent
@@ -20,9 +22,9 @@ public class ZIndexEntityComparator implements Comparator<Entity> {
 			return 1;
 		}
 		if (!arg0.equals(arg1)) {
-			if (arg0.entityId < arg1.entityId) {
+			if (arg0.getEntityId() < arg1.getEntityId()) {
 				return -1;
-			} else if (arg0.entityId > arg1.entityId) {
+			} else if (arg0.getEntityId() > arg1.getEntityId()) {
 				return 1;
 			} else {
 				throw new RuntimeException("Different objects with the same entityId? What?!");

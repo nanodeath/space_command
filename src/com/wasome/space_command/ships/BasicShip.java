@@ -1,4 +1,4 @@
-package com.wasome.space_command;
+package com.wasome.space_command.ships;
 
 import org.newdawn.fizzy.Rectangle;
 import org.newdawn.fizzy.Shape;
@@ -8,13 +8,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import com.wasome.space_command.Camera;
+import com.wasome.space_command.GameServer;
 import com.wasome.space_command.behavior.Visible;
 import com.wasome.space_command.components.BasicEngine;
 import com.wasome.space_command.components.BasicGyroEngine;
 import com.wasome.space_command.components.Engine;
 import com.wasome.space_command.components.Engine.Direction;
-import com.wasome.space_command.components.Inventory;
 import com.wasome.space_command.data.Point;
+import com.wasome.space_command.network.ClientState;
+import com.wasome.space_command.player.Inventory;
 import com.wasome.space_command.player.Player;
 import com.wasome.space_command.weapons.Gun;
 

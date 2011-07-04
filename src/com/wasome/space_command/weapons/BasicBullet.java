@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.wasome.space_command.Camera;
-import com.wasome.space_command.behavior.HasBody;
 import com.wasome.space_command.behavior.Visible;
 import com.wasome.space_command.data.Point;
 import com.wasome.space_command.util.Timer;
@@ -22,17 +21,16 @@ import com.wasome.space_command.util.Timer.Task;
 @Component
 @Scope("prototype")
 @Visible
-@HasBody
 public class BasicBullet extends Projectile {
 	@Autowired
 	private Camera camera;
-	
+
 	@Autowired
 	private Timer timer;
-	
-	private static final Point<Float> size = new Point<Float>(0.1f, 0.1f); 
+
+	private static final Point<Float> size = new Point<Float>(0.1f, 0.1f);
 	private Point<Float> screenSize;
-	
+
 	@Override
 	public void initializeAtLocation(Point<Float> position) {
 		Shape rectangle = new Rectangle(size.x, size.y);
@@ -56,12 +54,6 @@ public class BasicBullet extends Projectile {
 		// TODO should hit things
 	}
 
-	private boolean isDestroyed = false;
-	@Override
-	public boolean isDestroyed() {
-		return isDestroyed;
-	}
-
 	@Override
 	public float getInitialSpeed() {
 		return 10f;
@@ -72,32 +64,38 @@ public class BasicBullet extends Projectile {
 		@Override
 		public void executeAlarmTask() {
 			isDestroyed = true;
-			
 		}
 	}
 
-
 	@Override
 	public void writeObjectData(Kryo kryo, ByteBuffer buffer) {
-		buffer.putFloat(body.getX());
-		buffer.putFloat(body.getY());
-		buffer.putFloat(body.getXVelocity());
-		buffer.putFloat(body.getYVelocity());
-		buffer.putFloat(body.getAngularVelocity());
-		buffer.putFloat(body.getRotation());
+		buffer.put((byte) (isDestroyed ? 1 : 0));
+		if (!isDestroyed) {
+			buffer.putFloat(body.getX());
+			buffer.putFloat(body.getY());
+			buffer.putFloat(body.getXVelocity());
+			buffer.putFloat(body.getYVelocity());
+			buffer.putFloat(body.getAngularVelocity());
+			buffer.putFloat(body.getRotation());
+		}
 	}
 
 	@Override
 	public void readObjectData(Kryo kryo, ByteBuffer buffer) {
-		float x = buffer.getFloat();
-		float y = buffer.getFloat();
-		if (isNew()) {
-			initializeAtLocation(new Point<Float>(x, y));
+		byte destroyed = buffer.get();
+		if (destroyed == 1) {
+			isDestroyed = true;
 		} else {
-			body.setPosition(x, y);
+			float x = buffer.getFloat();
+			float y = buffer.getFloat();
+			if (isNew()) {
+				initializeAtLocation(new Point<Float>(x, y));
+			} else {
+				body.setPosition(x, y);
+			}
+			body.setVelocity(buffer.getFloat(), buffer.getFloat());
+			body.setAngularVelocity(buffer.getFloat());
+			body.setRotation(buffer.getFloat());
 		}
-		body.setVelocity(buffer.getFloat(), buffer.getFloat());
-		body.setAngularVelocity(buffer.getFloat());
-		body.setRotation(buffer.getFloat());
 	}
 }

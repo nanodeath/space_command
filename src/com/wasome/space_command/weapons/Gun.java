@@ -1,14 +1,12 @@
 package com.wasome.space_command.weapons;
 
-import com.wasome.space_command.ClientState;
 import com.wasome.space_command.GameServer;
-import com.wasome.space_command.behavior.Visible;
 import com.wasome.space_command.components.ShipComponent;
 import com.wasome.space_command.data.Point;
+import com.wasome.space_command.network.ClientState;
 import com.wasome.space_command.util.PointUtil;
 import com.wasome.space_command.util.WorldElementCollection;
 
-@Visible
 abstract public class Gun extends ShipComponent {
 	private long lastFiredAt = 0;
 	protected int fireRate = 0;

@@ -10,7 +10,7 @@
 	<import resource="space_command.core.xml" />
 
 	<bean class="com.wasome.space_command.GameClient" />
-	<bean class="com.wasome.space_command.server.ClientBodyFactory" />
+	<bean class="com.wasome.space_command.network.ClientBodyFactory" />
 	<bean class="com.esotericsoftware.kryonet.Client">
 		<constructor-arg index="0" value="32192" />
 		<constructor-arg index="1" value="8048" />

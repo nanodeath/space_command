@@ -19,8 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
+import com.wasome.space_command.network.BodyFactory;
 import com.wasome.space_command.player.Player;
-import com.wasome.space_command.server.BodyFactory;
 import com.wasome.space_command.util.Timer;
 
 public abstract class Game extends BasicGame implements ApplicationContextAware {

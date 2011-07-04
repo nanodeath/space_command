@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.annotation.Resource;
 
+import org.newdawn.fizzy.Body;
 import org.newdawn.fizzy.World;
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.GameContainer;
@@ -23,16 +24,18 @@ import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.wasome.space_command.behavior.Visible;
+import com.wasome.space_command.network.ClientState;
+import com.wasome.space_command.network.ServerMessage;
 import com.wasome.space_command.player.Player;
-import com.wasome.space_command.server.ServerMessage;
 import com.wasome.space_command.util.Timer;
+import com.wasome.space_command.util.ZIndexEntityComparator;
 
 public class GameClient extends Game {
 	@Autowired
 	private Client client;
 	private ClientState previousState;
 
-	private static final Set<Entity> renderableThings = new TreeSet<Entity>(new ZIndexEntityComparator());
+	private static final Set<Entity> _renderableThings = new TreeSet<Entity>(new ZIndexEntityComparator());
 	private final Queue<ServerMessage> serverUpdates = new ConcurrentLinkedQueue<ServerMessage>();
 
 	@Autowired
@@ -91,7 +94,7 @@ public class GameClient extends Game {
 
 	@Override
 	public void doRender() {
-		for (Entity entity : renderableThings) {
+		for (Entity entity : _renderableThings) {
 			entity.render();
 		}
 	}
@@ -176,7 +179,17 @@ public class GameClient extends Game {
 	public void addToGameWorld(Entity entity) {
 		super.addToGameWorld(entity);
 		if (entity.getClass().isAnnotationPresent(Visible.class)) {
-			renderableThings.add(entity);
+			_renderableThings.add(entity);
+		}
+	}
+
+	public void removeEntity(Entity e) {
+		_updatableThings.remove(e);
+		_renderableThings.remove(e);
+		entities.remove(e.getEntityId());
+		Body<?> body;
+		if((body = e.getBody()) != null){
+			world.remove(body);
 		}
 	}
 }

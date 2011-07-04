@@ -8,9 +8,9 @@ import org.jbox2d.common.MathUtils;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.wasome.space_command.Entity;
-import com.wasome.space_command.SentToClient;
-import com.wasome.space_command.Ship;
 import com.wasome.space_command.data.Point;
+import com.wasome.space_command.network.SentToClient;
+import com.wasome.space_command.ships.Ship;
 
 public abstract class Engine extends ShipComponent implements SentToClient {
 

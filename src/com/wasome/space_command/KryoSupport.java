@@ -6,10 +6,11 @@ import java.util.Map;
 import com.esotericsoftware.kryo.Kryo;
 import com.wasome.space_command.components.Engine;
 import com.wasome.space_command.data.Point;
-import com.wasome.space_command.server.ClientUpdate;
-import com.wasome.space_command.server.SelectiveEntitySync;
-import com.wasome.space_command.server.ServerMessage;
-import com.wasome.space_command.server.WorldSync;
+import com.wasome.space_command.network.ClientState;
+import com.wasome.space_command.network.ClientUpdate;
+import com.wasome.space_command.network.SelectiveEntitySync;
+import com.wasome.space_command.network.ServerMessage;
+import com.wasome.space_command.network.WorldSync;
 
 public class KryoSupport {
 	public static void initializeKryo(Kryo kryo){

@@ -1,6 +1,6 @@
 package com.wasome.space_command.flight_plan;
 
-import com.wasome.space_command.Ship;
+import com.wasome.space_command.ships.Ship;
 
 public interface FlightStep {
 	public boolean isDone();

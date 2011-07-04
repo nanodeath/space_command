@@ -8,6 +8,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 import com.wasome.space_command.data.Point;
+import com.wasome.space_command.network.SentToClient;
 import com.wasome.space_command.util.WorldElementCollection;
 
 abstract public class Entity implements ApplicationContextAware {
@@ -57,8 +58,9 @@ abstract public class Entity implements ApplicationContextAware {
 	public void initializeAtLocation(Point<Float> point) {	
 	}
 
+	protected boolean isDestroyed = false;
 	public boolean isDestroyed() {
-		return false;
+		return isDestroyed;
 	}
 
 	protected Body body;
@@ -70,11 +72,11 @@ abstract public class Entity implements ApplicationContextAware {
 	public static int ENTITY_ID_COUNTER = 0;
 	protected int entityId = ENTITY_ID_COUNTER++;
 
-	public int getEntityId() {
+	final public int getEntityId() {
 		return entityId;
 	}
 
-	public void setEntityId(int entityId) {
+	final public void setEntityId(int entityId) {
 		this.entityId = entityId;
 	}
 

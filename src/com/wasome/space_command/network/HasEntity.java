@@ -1,4 +1,4 @@
-package com.wasome.space_command.server;
+package com.wasome.space_command.network;
 
 import com.wasome.space_command.Entity;
 

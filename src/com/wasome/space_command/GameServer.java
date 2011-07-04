@@ -4,6 +4,7 @@ import static java.lang.System.currentTimeMillis;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Queue;
@@ -23,10 +24,13 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import com.wasome.space_command.data.Point;
-import com.wasome.space_command.server.SelectiveEntitySync;
-import com.wasome.space_command.server.ServerMessage;
-import com.wasome.space_command.server.ServerMessage.Audience;
-import com.wasome.space_command.server.WorldSync;
+import com.wasome.space_command.network.ClientState;
+import com.wasome.space_command.network.SelectiveEntitySync;
+import com.wasome.space_command.network.ServerMessage;
+import com.wasome.space_command.network.WorldSync;
+import com.wasome.space_command.network.ServerMessage.Audience;
+import com.wasome.space_command.ships.BasicShip;
+import com.wasome.space_command.ships.Ship;
 
 public class GameServer extends Game {
 	@Autowired
@@ -102,8 +106,14 @@ public class GameServer extends Game {
 		applyClientUpdates();
 
 		// evaluate world stuff
-		for (Entity entity : _updatableThings) {
+		Iterator<Entity> updatableIterator = _updatableThings.iterator();
+		while(updatableIterator.hasNext()){
+			Entity entity = updatableIterator.next();
 			entity.update();
+			if(entity.isDestroyed()){
+				entitiesToUpdate.add(entity);
+				updatableIterator.remove();
+			}
 		}
 		world.update(((float) msDelta) / 1000f);
 

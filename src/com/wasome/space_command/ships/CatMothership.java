@@ -1,4 +1,4 @@
-package com.wasome.space_command;
+package com.wasome.space_command.ships;
 
 import org.newdawn.fizzy.Circle;
 import org.newdawn.fizzy.DynamicBody;
@@ -8,6 +8,7 @@ import org.newdawn.slick.SlickException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.wasome.space_command.Camera;
 import com.wasome.space_command.behavior.Visible;
 import com.wasome.space_command.data.Point;
 

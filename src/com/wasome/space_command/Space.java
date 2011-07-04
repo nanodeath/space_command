@@ -1,24 +1,17 @@
 package com.wasome.space_command;
 
-import static com.wasome.space_command.GameServer.*;
-
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.newdawn.fizzy.Body;
 import org.newdawn.fizzy.BoundingBox;
-import org.newdawn.fizzy.World;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Input;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.wasome.space_command.behavior.Visible;
 import com.wasome.space_command.data.Point;
+import com.wasome.space_command.ships.Ship;
 
 @Component
 @Visible
@@ -49,20 +42,20 @@ public class Space extends Entity {
 	public void update() {
 //		Input input = getInput();
 //		if (input.isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
-////			int mouseX = input.getMouseX(), mouseY = input.getMouseY();
-////			World world = getWorld();
-////			Point<Float> worldPoint = camera.screenToWorld(mouseX, mouseY);
-////			List<Body<?>> bodies = world.bodiesAt(worldPoint.x, worldPoint.y);
-////			List<Ship> ships = new LinkedList<Ship>();
-////			for (Body<?> body : bodies) {
-////				Object userData = body.getUserData();
-////				if (userData instanceof Ship) {
-////					ships.add((Ship) userData);
-////					break;
-////				}
-////			}
-////			selectedShips.clear();
-////			selectedShips.addAll(ships);
+//			int mouseX = input.getMouseX(), mouseY = input.getMouseY();
+//			World world = getWorld();
+//			Point<Float> worldPoint = camera.screenToWorld(mouseX, mouseY);
+//			List<Body<?>> bodies = world.bodiesAt(worldPoint.x, worldPoint.y);
+//			List<Ship> ships = new LinkedList<Ship>();
+//			for (Body<?> body : bodies) {
+//				Object userData = body.getUserData();
+//				if (userData instanceof Ship) {
+//					ships.add((Ship) userData);
+//					break;
+//				}
+//			}
+//			selectedShips.clear();
+//			selectedShips.addAll(ships);
 //		} else if(input.isMousePressed(Input.MOUSE_RIGHT_BUTTON)){
 //			int mouseX = input.getMouseX(), mouseY = input.getMouseY();
 //			Point<Float> worldPoint = camera.screenToWorld(mouseX, mouseY);

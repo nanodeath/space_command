@@ -1,4 +1,4 @@
-package com.wasome.space_command.server;
+package com.wasome.space_command.network;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -15,7 +15,6 @@ import com.esotericsoftware.kryonet.Connection;
 import com.wasome.space_command.Entity;
 import com.wasome.space_command.GameClient;
 import com.wasome.space_command.GameServer;
-import com.wasome.space_command.SentToClient;
 import com.wasome.space_command.util.WorldElementCollection;
 
 @Component
@@ -32,6 +31,9 @@ public class WorldSync extends EntitySync implements ApplicationContextAware {
 		this.clientId = clientConnection.getID();
 	}
 	
+	/**
+	 * Prepare to send the sync payload -- happens on the server.
+	 */
 	@Override
 	public void prepareToSend(){
 		clientUpdates = new ArrayList<ClientUpdate>();
@@ -57,22 +59,25 @@ public class WorldSync extends EntitySync implements ApplicationContextAware {
 			}
 		}
 	}
-	
-	@Override
-	public void process(ApplicationContext context, GameClient client) {
-		Set<Entity> newEntities = new HashSet<Entity>();
-		for(ClientUpdate clientUpdate : clientUpdates){
-			Entity e = client.getOrCreateEntity(clientUpdate.entityId, clientUpdate.getEntityClass());
-			if(e.isNew()){
-				newEntities.add(e);
-			}
-			clientUpdate.setApplicationContext(context);
-			clientUpdate.applyToEntity(e);
-		}
-		for(Entity newEntity : newEntities){
-			newEntity.setIsNew(false);
-		}
-	}
+//	
+//	/**
+//	 * Process the payload on the client.
+//	 */
+//	@Override
+//	public void process(ApplicationContext context, GameClient client) {
+//		Set<Entity> newEntities = new HashSet<Entity>();
+//		for(ClientUpdate clientUpdate : clientUpdates){
+//			Entity e = client.getOrCreateEntity(clientUpdate.entityId, clientUpdate.getEntityClass());
+//			if(e.isNew()){
+//				newEntities.add(e);
+//			}
+//			clientUpdate.setApplicationContext(context);
+//			clientUpdate.applyToEntity(e);
+//		}
+//		for(Entity newEntity : newEntities){
+//			newEntity.setIsNew(false);
+//		}
+//	}
 
 	@Override
 	public int getClientId() {

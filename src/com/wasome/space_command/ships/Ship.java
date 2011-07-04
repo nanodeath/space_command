@@ -1,4 +1,4 @@
-package com.wasome.space_command;
+package com.wasome.space_command.ships;
 
 import static com.wasome.space_command.util.PointUtil.rotateAbout;
 
@@ -11,13 +11,15 @@ import org.newdawn.fizzy.Body;
 import org.newdawn.slick.Image;
 
 import com.esotericsoftware.kryo.Kryo;
+import com.wasome.space_command.Entity;
 import com.wasome.space_command.components.Engine;
 import com.wasome.space_command.components.ShipComponent;
 import com.wasome.space_command.components.Engine.Direction;
-import com.wasome.space_command.components.Inventory;
 import com.wasome.space_command.data.Point;
 import com.wasome.space_command.flight_plan.FlightPlan;
 import com.wasome.space_command.flight_plan.OrientTowardsPoint;
+import com.wasome.space_command.network.SentToClient;
+import com.wasome.space_command.player.Inventory;
 import com.wasome.space_command.player.Player;
 import com.wasome.space_command.util.CollectionUtil;
 import com.wasome.space_command.util.WorldElementCollection;

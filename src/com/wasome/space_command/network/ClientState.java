@@ -1,4 +1,4 @@
-package com.wasome.space_command;
+package com.wasome.space_command.network;
 
 import javax.annotation.Resource;
 

@@ -1,4 +1,4 @@
-package com.wasome.space_command.server;
+package com.wasome.space_command.network;
 
 import java.nio.ByteBuffer;
 
@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.wasome.space_command.Entity;
-import com.wasome.space_command.SentToClient;
 
 @Component
 @Scope("prototype")

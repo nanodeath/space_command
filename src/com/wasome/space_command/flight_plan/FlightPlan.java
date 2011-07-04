@@ -3,7 +3,7 @@ package com.wasome.space_command.flight_plan;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.wasome.space_command.Ship;
+import com.wasome.space_command.ships.Ship;
 
 public class FlightPlan {
 	private List<FlightStep> steps = new ArrayList<FlightStep>();

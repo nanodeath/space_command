@@ -1,4 +1,4 @@
-package com.wasome.space_command.components;
+package com.wasome.space_command.player;
 
 import static com.wasome.space_command.player.PlayerInput.SHOW_INVENTORY;
 
@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.wasome.space_command.behavior.Visible;
+import com.wasome.space_command.components.ShipComponent;
 import com.wasome.space_command.data.Point;
 import com.wasome.space_command.items.Item;
 

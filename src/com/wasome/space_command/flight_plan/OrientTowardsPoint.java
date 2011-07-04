@@ -5,8 +5,8 @@ import static com.wasome.space_command.util.MathUtil.clampAngleToNormalRange;
 
 import org.jbox2d.common.MathUtils;
 
-import com.wasome.space_command.Ship;
 import com.wasome.space_command.data.Point;
+import com.wasome.space_command.ships.Ship;
 import com.wasome.space_command.util.MathUtil;
 
 public class OrientTowardsPoint implements FlightStep {

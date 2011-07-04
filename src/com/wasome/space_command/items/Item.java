@@ -13,12 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.wasome.space_command.Camera;
 import com.wasome.space_command.Entity;
-import com.wasome.space_command.Ship;
 import com.wasome.space_command.behavior.Visible;
-import com.wasome.space_command.components.Inventory;
 import com.wasome.space_command.data.Point;
 import com.wasome.space_command.events.AcquiredItemEvent;
 import com.wasome.space_command.events.Queue;
+import com.wasome.space_command.player.Inventory;
+import com.wasome.space_command.ships.Ship;
 
 @Visible
 abstract public class Item extends Entity implements WorldListener {
