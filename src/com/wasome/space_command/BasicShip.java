@@ -37,7 +37,9 @@ public class BasicShip extends Ship {
 
 	}
 
+	@Override
 	public void init() {
+		super.init();
 		if (game.isServer()) {
 			inventory = spring.getBean(Inventory.class);
 			addComponent(inventory);

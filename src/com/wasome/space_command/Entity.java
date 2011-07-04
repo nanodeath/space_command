@@ -43,6 +43,12 @@ abstract public class Entity implements ApplicationContextAware {
 		if (isNew)
 			isNew = false;
 	}
+	
+	public void init(){
+		if(server != null && this instanceof SentToClient){
+			server.updateEntityOnClients(this);
+		}
+	}
 
 	public void addToWorld() {
 		game.addToGameWorld(this);

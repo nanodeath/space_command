@@ -1,5 +1,7 @@
 package com.wasome.space_command.weapons;
 
+import com.wasome.space_command.ClientState;
+import com.wasome.space_command.GameServer;
 import com.wasome.space_command.behavior.Visible;
 import com.wasome.space_command.components.ShipComponent;
 import com.wasome.space_command.data.Point;
@@ -11,8 +13,11 @@ abstract public class Gun extends ShipComponent {
 	private long lastFiredAt = 0;
 	protected int fireRate = 0;
 	protected Point<Float> localPosition;
-
-	protected WorldElementCollection projectiles = new WorldElementCollection();
+	
+	public void init(){
+		super.init();
+		subEntities = spring.getBean(WorldElementCollection.class);
+	}
 
 	public Point<Float> getLocalPosition() {
 		return localPosition;
@@ -24,26 +29,28 @@ abstract public class Gun extends ShipComponent {
 
 	@Override
 	public void update() {
-		projectiles.update();
-		// TODO fix this
-//		if (getInput().isKeyDown(Input.KEY_SPACE)) {
-//			long currentTime = getGameContainer().getTime();
-//			if (currentTime - lastFiredAt >= fireRate) {
-//				lastFiredAt = currentTime;
-//				fire();
-//			}
-//		}
+		subEntities.update();
+		ClientState state = GameServer.clientStates.get(1);
+		if (state == null) {
+			return;
+		}
+		if(state.isShooting){
+			long currentTime = server.getGameContainer().getTime();
+			if (currentTime - lastFiredAt >= fireRate) {
+				lastFiredAt = currentTime;
+				fire();
+			}
+		}
 	}
 	
 	@Override
 	public void render() {
-		projectiles.render();
+		subEntities.render();
 	}
 
 	protected void fire() {
 		Projectile projectile = createProjectile();
-		game.getWorld().add(projectile.getBody());
-		projectiles.addElement(projectile);
+		subEntities.addElement(projectile);
 		Point<Float> worldPosition = ship.localToWorld(localPosition);
 		projectile.getBody().setPosition(worldPosition.x, worldPosition.y);
 		float rotation = ship.getBody().getRotation();

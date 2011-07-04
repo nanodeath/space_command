@@ -1,5 +1,7 @@
 package com.wasome.space_command.weapons;
 
+import java.nio.ByteBuffer;
+
 import org.newdawn.fizzy.DynamicBody;
 import org.newdawn.fizzy.Rectangle;
 import org.newdawn.fizzy.Shape;
@@ -9,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import com.esotericsoftware.kryo.Kryo;
 import com.wasome.space_command.Camera;
 import com.wasome.space_command.behavior.HasBody;
 import com.wasome.space_command.behavior.Visible;
@@ -35,6 +38,7 @@ public class BasicBullet extends Projectile {
 		Shape rectangle = new Rectangle(size.x, size.y);
 		body = new DynamicBody<Projectile>(rectangle, position.x, position.y);
 		body.setBullet(true);
+		game.getWorld().add(body);
 		screenSize = camera.scaleWorldToScreen(size.x, size.y);
 		timer.registerOnceAlarm(1000, new SelfDestruct());
 	}
@@ -70,5 +74,30 @@ public class BasicBullet extends Projectile {
 			isDestroyed = true;
 			
 		}
+	}
+
+
+	@Override
+	public void writeObjectData(Kryo kryo, ByteBuffer buffer) {
+		buffer.putFloat(body.getX());
+		buffer.putFloat(body.getY());
+		buffer.putFloat(body.getXVelocity());
+		buffer.putFloat(body.getYVelocity());
+		buffer.putFloat(body.getAngularVelocity());
+		buffer.putFloat(body.getRotation());
+	}
+
+	@Override
+	public void readObjectData(Kryo kryo, ByteBuffer buffer) {
+		float x = buffer.getFloat();
+		float y = buffer.getFloat();
+		if (isNew()) {
+			initializeAtLocation(new Point<Float>(x, y));
+		} else {
+			body.setPosition(x, y);
+		}
+		body.setVelocity(buffer.getFloat(), buffer.getFloat());
+		body.setAngularVelocity(buffer.getFloat());
+		body.setRotation(buffer.getFloat());
 	}
 }

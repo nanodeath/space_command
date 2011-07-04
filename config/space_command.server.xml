@@ -12,8 +12,8 @@
 	<bean class="com.wasome.space_command.GameServer" />
 	<bean class="com.wasome.space_command.server.ServerBodyFactory" />
 	<bean class="com.esotericsoftware.kryonet.Server">
-		<constructor-arg index="0" value="8192" />
-		<constructor-arg index="1" value="2048" />
+		<constructor-arg index="0" value="32192" />
+		<constructor-arg index="1" value="8048" />
 		<constructor-arg index="2" ref="kryo" />
 	</bean>
 </beans>

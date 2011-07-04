@@ -22,6 +22,7 @@ public class ClientState implements ApplicationContextAware {
 	public boolean isStrafingLeft;
 	public boolean isStrafingRight;
 	public boolean isEmergencyStopping;
+	public boolean isShooting;
 
 	@Resource(name = "player1")
 	private transient Player player1;
@@ -46,12 +47,13 @@ public class ClientState implements ApplicationContextAware {
 		isStrafingLeft = player1.isInputDown(PlayerInput.STRAFE_LEFT);
 		isStrafingRight = player1.isInputDown(PlayerInput.STRAFE_RIGHT);
 		isEmergencyStopping = player1.isInputDown(PlayerInput.EMERGENCY_STOP);
+		isShooting = player1.isInputDown(PlayerInput.SHOOT_GUNS);
 	}
 
 	public boolean equivalentTo(ClientState newState) {
 		return isAccelerating == newState.isAccelerating && isTurningLeft == newState.isTurningLeft && isTurningRight == newState.isTurningRight
 				&& isReversing == newState.isReversing && isStrafingLeft == newState.isStrafingLeft && isStrafingRight == newState.isStrafingRight
-				&& isEmergencyStopping == newState.isEmergencyStopping;
+				&& isEmergencyStopping == newState.isEmergencyStopping && isShooting == newState.isShooting;
 	}
 
 	@Override

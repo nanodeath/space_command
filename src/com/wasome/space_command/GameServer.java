@@ -4,13 +4,11 @@ import static java.lang.System.currentTimeMillis;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Queue;
-import java.util.concurrent.BlockingQueue;
+import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 import org.newdawn.fizzy.World;
 import org.newdawn.slick.AppGameContainer;
@@ -36,7 +34,7 @@ public class GameServer extends Game {
 
 	private final Queue<ClientState> updatesFromClient = new ConcurrentLinkedQueue<ClientState>();
 	public static final Map<Integer, ClientState> clientStates = new HashMap<Integer, ClientState>();
-	private final BlockingQueue<Entity> entitiesToUpdate = new LinkedBlockingQueue<Entity>();
+	private final Set<Entity> entitiesToUpdate = new LinkedHashSet<Entity>();
 	private final Queue<ServerMessage> messagesToSend = new ConcurrentLinkedQueue<ServerMessage>();
 
 	public static UnicodeFont FONT;
@@ -111,24 +109,23 @@ public class GameServer extends Game {
 
 		// prepare updates
 		if (!entitiesToUpdate.isEmpty()) {
-			List<Entity> entitiesToUpdateNow = new LinkedList<Entity>();
-			entitiesToUpdate.drainTo(entitiesToUpdateNow);
 			SelectiveEntitySync syncUp = spring.getBean(SelectiveEntitySync.class);
-			syncUp.setEntitiesToUpdate(entitiesToUpdateNow);
+			syncUp.setEntitiesToUpdate(entitiesToUpdate);
 			messagesToSend.add(syncUp);
 		}
-		
+
 		// finally send all the updates!
 		ServerMessage message;
-		while((message = messagesToSend.poll()) != null){
+		while ((message = messagesToSend.poll()) != null) {
 			int clientId = message.getClientId();
 			message.prepareToSend();
-			if(clientId == Audience.EVERYBODY){
+			if (clientId == Audience.EVERYBODY) {
 				server.sendToAllTCP(message);
 			} else {
 				server.sendToTCP(clientId, message);
 			}
 		}
+		entitiesToUpdate.clear();
 	}
 
 	private void applyClientUpdates() {
@@ -149,9 +146,9 @@ public class GameServer extends Game {
 		// Run logic every 20 ms (50 times per second)
 		app.setMinimumLogicUpdateInterval(40);
 		app.setMaximumLogicUpdateInterval(40);
-		app.setTargetFrameRate(120);
+		app.setTargetFrameRate(60);
 
-		// app.setVSync(true);
+		app.setVSync(true);
 		app.setDisplayMode(400, 300, false);
 		app.start();
 	}
@@ -166,8 +163,8 @@ public class GameServer extends Game {
 	public boolean isServer() {
 		return true;
 	}
-	
-	public void trackEntity(Entity enhancedObject){
+
+	public void trackEntity(Entity enhancedObject) {
 		if (!entities.containsKey(enhancedObject.entityId)) {
 			entities.put(enhancedObject.entityId, enhancedObject);
 		}

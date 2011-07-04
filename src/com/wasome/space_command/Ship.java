@@ -28,10 +28,14 @@ public abstract class Ship extends Entity implements SentToClient {
 	protected Point<Float> size;
 	protected Inventory inventory;
 	protected Player player;
-	
+
 	{
 		setZIndex(0);
-		subEntities = new WorldElementCollection();
+	}
+
+	public void init() {
+		super.init();
+		subEntities = spring.getBean(WorldElementCollection.class);
 	}
 
 	public void updateComponents() {
@@ -99,11 +103,10 @@ public abstract class Ship extends Entity implements SentToClient {
 
 	private static final Engine[] EMPTY_ENGINE_ARRAY = new Engine[] {};
 
-	protected final List<Engine> getGyroEngines(){
-		return CollectionUtil.partition(getEngineComponents(),
-				new EngineFacingPredicate(Direction.GYRO)).get(0);
+	protected final List<Engine> getGyroEngines() {
+		return CollectionUtil.partition(getEngineComponents(), new EngineFacingPredicate(Direction.GYRO)).get(0);
 	}
-	
+
 	protected void turnClockwise() {
 		setEngineOutput(-1f, getGyroEngines().toArray(EMPTY_ENGINE_ARRAY));
 	}
@@ -133,9 +136,8 @@ public abstract class Ship extends Entity implements SentToClient {
 	}
 
 	protected void turnEnginesOnOff(Direction turnOn, Direction turnOff) {
-		List<List<Engine>> partitionedEngines = CollectionUtil.partition(
-				getEngineComponents(), new EngineFacingPredicate(turnOn),
-				new EngineFacingPredicate(turnOff));
+		List<List<Engine>> partitionedEngines = CollectionUtil.partition(getEngineComponents(), new EngineFacingPredicate(turnOn), new EngineFacingPredicate(
+				turnOff));
 		List<Engine> enginesToTurnOn = partitionedEngines.get(0);
 		List<Engine> enginesToTurnOff = partitionedEngines.get(1);
 		setEngineOutput(1f, enginesToTurnOn.toArray(EMPTY_ENGINE_ARRAY));
@@ -162,9 +164,9 @@ public abstract class Ship extends Entity implements SentToClient {
 
 	public List<Engine> getEngineComponents() {
 		List<Engine> engines = new LinkedList<Engine>();
-		for(Entity component : subEntities.updatableElements){
-			if(component instanceof Engine){
-				engines.add((Engine)component);
+		for (Entity component : subEntities.updatableElements) {
+			if (component instanceof Engine) {
+				engines.add((Engine) component);
 			}
 		}
 		return engines;
@@ -181,13 +183,11 @@ public abstract class Ship extends Entity implements SentToClient {
 	public Body<Ship> getBody() {
 		return body;
 	}
-	
-	public Point<Float> localToWorld(Point<Float> localPoint){
+
+	public Point<Float> localToWorld(Point<Float> localPoint) {
 		Point<Float> worldCenter = new Point<Float>(body.getX(), body.getY());
-		Point<Float> worldEnginePosition = new Point<Float>(worldCenter.x
-				+ localPoint.x, worldCenter.y + localPoint.y);
-		Point<Float> rotated = rotateAbout(worldCenter,
-				worldEnginePosition, getRotation(), true);
+		Point<Float> worldEnginePosition = new Point<Float>(worldCenter.x + localPoint.x, worldCenter.y + localPoint.y);
+		Point<Float> rotated = rotateAbout(worldCenter, worldEnginePosition, getRotation(), true);
 		return rotated;
 	}
 
@@ -202,11 +202,11 @@ public abstract class Ship extends Entity implements SentToClient {
 	public Inventory getInventory() {
 		return inventory;
 	}
-	
-	public Player getPlayer(){
+
+	public Player getPlayer() {
 		return player;
 	}
-	
+
 	@Override
 	public void writeObjectData(Kryo kryo, ByteBuffer buffer) {
 		buffer.putFloat(body.getX());
@@ -221,10 +221,10 @@ public abstract class Ship extends Entity implements SentToClient {
 	public void readObjectData(Kryo kryo, ByteBuffer buffer) {
 		float x = buffer.getFloat();
 		float y = buffer.getFloat();
-		if(isNew()){
+		if (isNew()) {
 			initializeAtLocation(new Point<Float>(x, y));
 		} else {
-			body.setPosition(x, y);	
+			body.setPosition(x, y);
 		}
 		body.setVelocity(buffer.getFloat(), buffer.getFloat());
 		body.setAngularVelocity(buffer.getFloat());
