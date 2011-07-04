@@ -23,7 +23,6 @@ import com.wasome.space_command.util.CollectionUtil;
 import com.wasome.space_command.util.WorldElementCollection;
 
 public abstract class Ship extends Entity implements SentToClient {
-	protected WorldElementCollection components = new WorldElementCollection();
 	protected FlightPlan flightPlan;
 	protected boolean directControlEnabled;
 	protected Point<Float> size;
@@ -32,14 +31,15 @@ public abstract class Ship extends Entity implements SentToClient {
 	
 	{
 		setZIndex(0);
+		subEntities = new WorldElementCollection();
 	}
 
 	public void updateComponents() {
-		components.update();
+		subEntities.update();
 	}
 
 	public void renderComponents() {
-		components.render();
+		subEntities.render();
 	}
 
 	public void performFlightPlan() {
@@ -50,7 +50,7 @@ public abstract class Ship extends Entity implements SentToClient {
 
 	public void addComponent(ShipComponent c) {
 		c.setShip(this);
-		components.addElement(c);
+		subEntities.addElement(c);
 	}
 
 	public Point<Float> getCenter() {
@@ -162,7 +162,7 @@ public abstract class Ship extends Entity implements SentToClient {
 
 	public List<Engine> getEngineComponents() {
 		List<Engine> engines = new LinkedList<Engine>();
-		for(Entity component : components.updatableElements){
+		for(Entity component : subEntities.updatableElements){
 			if(component instanceof Engine){
 				engines.add((Engine)component);
 			}

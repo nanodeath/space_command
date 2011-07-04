@@ -65,13 +65,6 @@ public class GameClient extends Game {
 					serverUpdates.add((ServerMessage)object);
 				}
 			}
-			
-			@Override
-			public void disconnected(Connection connection) {
-				System.out.println("Client disconnected, suiciding");
-				//client.close();
-				//gameClient.gameContainer.exit();
-			}
 		});
 		client.start();
 	}

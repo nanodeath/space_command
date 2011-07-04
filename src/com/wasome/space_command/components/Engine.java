@@ -2,19 +2,11 @@ package com.wasome.space_command.components;
 
 import static com.wasome.space_command.util.PointUtil.rotateAbout;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.nio.ByteBuffer;
 
 import org.jbox2d.common.MathUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import sun.misc.FloatingDecimal;
 
 import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.serialize.FloatSerializer;
-import com.esotericsoftware.kryo.serialize.IntSerializer;
 import com.wasome.space_command.Entity;
 import com.wasome.space_command.SentToClient;
 import com.wasome.space_command.Ship;
@@ -75,7 +67,6 @@ public abstract class Engine extends ShipComponent implements SentToClient {
 	}
 
 	public Engine() {
-			//setZIndex((float) (-1*Math.random()));
 		setZIndex(-1f);
 	}
 
@@ -84,7 +75,7 @@ public abstract class Engine extends ShipComponent implements SentToClient {
 	}
 
 	public void setLocalPosition(Point<Float> point) {
-		changedInLastUpdate = true;
+		server.updateEntityOnClient(this);
 		localPosition = point;
 	}
 
@@ -94,7 +85,7 @@ public abstract class Engine extends ShipComponent implements SentToClient {
 	}
 
 	public void setFacingDirection(Direction d) {
-		changedInLastUpdate = true;
+		server.updateEntityOnClient(this);
 		pointingTowards = d;
 	}
 
@@ -106,13 +97,6 @@ public abstract class Engine extends ShipComponent implements SentToClient {
 	 * The engine location, in world coordinates
 	 */
 	protected Point<Float> calculateWorldEngineLocation() {
-		if (ship == null) {
-			System.out.println("1");
-		} else if (ship.getBody() == null) {
-			System.out.println("2");
-		} else if (ship.getBody().getX() == 0) {
-			System.out.println("3");
-		}
 		Point<Float> worldCenter = new Point<Float>(ship.getBody().getX(), ship.getBody().getY());
 		Point<Float> worldEnginePosition = new Point<Float>(worldCenter.x + localPosition.x, worldCenter.y + localPosition.y);
 		Point<Float> rotatedPosition = rotateAbout(worldCenter, worldEnginePosition, ship.getRotation(), true);
@@ -143,7 +127,7 @@ public abstract class Engine extends ShipComponent implements SentToClient {
 	 */
 	public void setOutput(float percent) {
 		System.out.println("Updating thrusters!");
-		changedInLastUpdate = true;
+		server.updateEntityOnClient(this);
 		currentThrustPercent = MathUtils.clamp(percent, 0f, 1f);
 		force = Direction.toForce(pointingTowards, currentThrustPercent * maximumThrust);
 	}
@@ -165,12 +149,11 @@ public abstract class Engine extends ShipComponent implements SentToClient {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void readObjectData(Kryo kryo, ByteBuffer buffer) {
-		//Class<? extends Ship> shipClass = kryo.readClass(buffer).getType();
 		String shipClass = kryo.readObject(buffer, String.class);
 		int shipId = buffer.getInt();
-		if(isNew()){
+		if (isNew()) {
 			try {
-				ship = (Ship) client.getOrCreateEntity(shipId, (Class<? extends Entity>)Class.forName(shipClass));
+				ship = (Ship) client.getOrCreateEntity(shipId, (Class<? extends Entity>) Class.forName(shipClass));
 			} catch (ClassNotFoundException e) {
 				throw new RuntimeException(e);
 			}

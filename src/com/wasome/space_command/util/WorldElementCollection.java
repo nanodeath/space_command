@@ -2,6 +2,7 @@ package com.wasome.space_command.util;
 
 import static java.util.Collections.unmodifiableSet;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -50,5 +51,27 @@ public class WorldElementCollection extends Entity {
 	@Override
 	public boolean isDestroyed() {
 		return false;
+	}
+	
+	public Set<Entity> transitiveClosureUpdatable(){
+		return transitiveClosureUpdatable(null);
+	}
+	
+	/**
+	 * @param ignore the entity to ignore, to prevent infinite recursion.
+	 * @return
+	 */
+	private Set<Entity> transitiveClosureUpdatable(Entity ignore){
+		Set<Entity> entities = new HashSet<Entity>();
+		for(Entity entity : updatableElements){
+			if(entity != ignore && !entities.contains(entity)){
+				entities.add(entity);
+				WorldElementCollection subEntities = entity.getSubEntities();
+				if(subEntities != null){
+					entities.addAll(subEntities.transitiveClosureUpdatable(ignore));
+				}
+			}
+		}
+		return entities;
 	}
 }

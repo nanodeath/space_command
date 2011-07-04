@@ -8,12 +8,13 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 import com.wasome.space_command.data.Point;
+import com.wasome.space_command.util.WorldElementCollection;
 
 abstract public class Entity implements ApplicationContextAware {
 	protected ApplicationContext spring;
 	private boolean isNew = true;
-	protected boolean changedInLastUpdate = false;
 	private float zIndex = 0f;
+	protected WorldElementCollection subEntities;
 
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -79,14 +80,6 @@ abstract public class Entity implements ApplicationContextAware {
 		isNew = flag;
 	}
 
-	public boolean isChangedInLastUpdate() {
-		return changedInLastUpdate;
-	}
-
-	public void setChangedInLastUpdate(boolean changedInLastUpdate) {
-		this.changedInLastUpdate = changedInLastUpdate;
-	}
-
 	public float getZIndex() {
 		return zIndex;
 	}
@@ -97,5 +90,9 @@ abstract public class Entity implements ApplicationContextAware {
 	 */
 	public void setZIndex(float zIndex) {
 		this.zIndex = zIndex;
+	}
+	
+	public WorldElementCollection getSubEntities(){
+		return subEntities;
 	}
 }

@@ -5,6 +5,7 @@ import static java.lang.System.currentTimeMillis;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +28,7 @@ import com.esotericsoftware.kryonet.Server;
 import com.wasome.space_command.data.Point;
 import com.wasome.space_command.server.ClientUpdate;
 import com.wasome.space_command.server.WorldSync;
+import com.wasome.space_command.util.WorldElementCollection;
 
 public class GameServer extends Game {
 	@Autowired
@@ -53,13 +55,21 @@ public class GameServer extends Game {
 					ClientState state = (ClientState) object;
 					state.receivedAt = currentTimeMillis();
 					updatesFromClient.add(state);
-				} else if (object instanceof String){
-					String message = (String)object;
-					if(message.equals("world_sync")){
+				} else if (object instanceof String) {
+					String message = (String) object;
+					if (message.equals("world_sync")) {
 						List<ClientUpdate> clientUpdates = new ArrayList<ClientUpdate>();
 						for (Entity entity : updatableThings) {
-							if(entity instanceof SentToClient){
+							if (entity instanceof SentToClient) {
 								updateEntityOnClient(entity);
+							}
+							WorldElementCollection subEntities = entity.getSubEntities();
+							if (subEntities != null) {
+								for (Entity subEntity : subEntities.transitiveClosureUpdatable()) {
+									if (subEntity instanceof SentToClient) {
+										updateEntityOnClient(subEntity);
+									}
+								}
 							}
 						}
 						connection.sendTCP(new WorldSync(clientUpdates));
@@ -103,27 +113,24 @@ public class GameServer extends Game {
 	public void doUpdate() {
 		// process updates
 		applyClientUpdates();
-		
+
 		// evaluate world stuff
 		for (Entity entity : updatableThings) {
 			entity.update();
-		}
-		for (Entity entity : updatableThings) {
-			if(entity.isChangedInLastUpdate() && entity instanceof SentToClient){
-				entitiesToUpdate.add(entity);
-			}
-			entity.setChangedInLastUpdate(false);
 		}
 		world.update(((float) msDelta) / 1000f);
 
 		// send state updates
 		if (!entitiesToUpdate.isEmpty()) {
 			List<ClientUpdate> clientUpdates = new ArrayList<ClientUpdate>(entitiesToUpdate.size());
-			for (Entity entity : entitiesToUpdate) {
+			Iterator<Entity> it = entitiesToUpdate.iterator();
+			while (it.hasNext()) {
+				Entity entity = it.next();
 				ClientUpdate update = new ClientUpdate();
 				update.setApplicationContext(spring);
 				update.setEntity(entity);
 				clientUpdates.add(update);
+				it.remove();
 			}
 			WorldSync sync = new WorldSync(clientUpdates);
 			server.sendToAllTCP(sync);
@@ -169,7 +176,7 @@ public class GameServer extends Game {
 
 	public void updateEntityOnClient(Entity enhancedObject) {
 		System.out.println("Updating " + enhancedObject.toString() + " on client");
-		if(!entities.containsKey(enhancedObject.entityId)){
+		if (!entities.containsKey(enhancedObject.entityId)) {
 			entities.put(enhancedObject.entityId, enhancedObject);
 		}
 		entitiesToUpdate.add(enhancedObject);

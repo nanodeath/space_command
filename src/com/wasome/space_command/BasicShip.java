@@ -77,9 +77,9 @@ public class BasicShip extends Ship {
 			gun.setLocalPosition(new Point<Float>(0f, size.y / 2));
 			addComponent(gun);
 
-			for (Entity component : components.updatableElements) {
-				game.addToGameWorld(component);
-			}
+			// for (Entity component : components.updatableElements) {
+			// game.addToGameWorld(component);
+			// }
 		}
 		player = spring.getBean("player1", Player.class);
 		player.validateAllKeysAssigned();
@@ -98,7 +98,7 @@ public class BasicShip extends Ship {
 
 	@Override
 	public void update() {
-		// updateComponents();
+		updateComponents();
 		performFlightPlan();
 		if (directControlEnabled && player != null) {
 			ClientState state = GameServer.clientStates.get(1);
