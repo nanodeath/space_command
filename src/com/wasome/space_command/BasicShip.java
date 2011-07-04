@@ -105,21 +105,21 @@ public class BasicShip extends Ship {
 			if (state == null) {
 				return;
 			}
-			// if (input.isInputDown(TURN_LEFT)) {
-			// turnCounterClockwise();
-			// turningCCW = true;
-			// } else if (turningCCW) {
-			// stopTurning();
-			// turningCCW = false;
-			// }
-			// if (input.isInputDown(TURN_RIGHT)) {
-			// turnClockwise();
-			// turningCW = true;
-			// } else if (turningCW) {
-			// stopTurning();
-			// turningCW = false;
-			// }
-			//
+			if (state.isTurningLeft) {
+				turnCounterClockwise();
+				turningCCW = true;
+			} else if (turningCCW) {
+				stopTurning();
+				turningCCW = false;
+			}
+			if (state.isTurningRight) {
+				turnClockwise();
+				turningCW = true;
+			} else if (turningCW) {
+				stopTurning();
+				turningCW = false;
+			}
+
 			if (state.isAccelerating) {
 				accelerate();
 				accelerating = true;
@@ -127,34 +127,34 @@ public class BasicShip extends Ship {
 				stopAccelerating();
 				accelerating = false;
 			}
-			// if (input.isInputDown(REVERSE)) {
-			// reverse();
-			// reversing = true;
-			// } else if (reversing) {
-			// stopReversing();
-			// reversing = false;
-			// }
-			//
-			// if (input.isInputDown(STRAFE_LEFT)) {
-			// turnEnginesOnOff(Direction.STARBOARD, Direction.PORT);
-			// acceleratingLeft = true;
-			// } else if (acceleratingLeft) {
-			// turnEnginesOnOff(null, Direction.STARBOARD);
-			// acceleratingLeft = false;
-			// }
-			//
-			// if (input.isInputDown(STRAFE_RIGHT)) {
-			// turnEnginesOnOff(Direction.PORT, Direction.STARBOARD);
-			// acceleratingRight = true;
-			// } else if (acceleratingRight) {
-			// turnEnginesOnOff(null, Direction.PORT);
-			// acceleratingRight = false;
-			// }
-			//
-			// if (input.isInputDown(EMERGENCY_STOP)) {
-			// body.setVelocity(0f, 0f);
-			// body.setAngularVelocity(0f);
-			// }
+			if (state.isReversing) {
+				reverse();
+				reversing = true;
+			} else if (reversing) {
+				stopReversing();
+				reversing = false;
+			}
+
+			if (state.isStrafingLeft) {
+				turnEnginesOnOff(Direction.STARBOARD, Direction.PORT);
+				acceleratingLeft = true;
+			} else if (acceleratingLeft) {
+				turnEnginesOnOff(null, Direction.STARBOARD);
+				acceleratingLeft = false;
+			}
+
+			if (state.isStrafingRight) {
+				turnEnginesOnOff(Direction.PORT, Direction.STARBOARD);
+				acceleratingRight = true;
+			} else if (acceleratingRight) {
+				turnEnginesOnOff(null, Direction.PORT);
+				acceleratingRight = false;
+			}
+
+			if (state.isEmergencyStopping) {
+				body.setVelocity(0f, 0f);
+				body.setAngularVelocity(0f);
+			}
 		}
 	}
 

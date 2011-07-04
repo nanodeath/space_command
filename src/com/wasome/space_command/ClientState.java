@@ -16,10 +16,16 @@ import com.wasome.space_command.player.PlayerInput;
 @Scope("prototype")
 public class ClientState implements ApplicationContextAware {
 	public boolean isAccelerating;
+	public boolean isTurningLeft;
+	public boolean isTurningRight;
+	public boolean isReversing;
+	public boolean isStrafingLeft;
+	public boolean isStrafingRight;
+	public boolean isEmergencyStopping;
 
 	@Resource(name = "player1")
 	private transient Player player1;
-	
+
 	public int playerId = 1;
 
 	public long receivedAt;
@@ -34,15 +40,22 @@ public class ClientState implements ApplicationContextAware {
 
 	public void updateInput(Input input) {
 		isAccelerating = player1.isInputDown(PlayerInput.ACCELERATE);
+		isTurningLeft = player1.isInputDown(PlayerInput.TURN_LEFT);
+		isTurningRight = player1.isInputDown(PlayerInput.TURN_RIGHT);
+		isReversing = player1.isInputDown(PlayerInput.REVERSE);
+		isStrafingLeft = player1.isInputDown(PlayerInput.STRAFE_LEFT);
+		isStrafingRight = player1.isInputDown(PlayerInput.STRAFE_RIGHT);
+		isEmergencyStopping = player1.isInputDown(PlayerInput.EMERGENCY_STOP);
 	}
 
 	public boolean equivalentTo(ClientState newState) {
-		return isAccelerating == newState.isAccelerating;
+		return isAccelerating == newState.isAccelerating && isTurningLeft == newState.isTurningLeft && isTurningRight == newState.isTurningRight
+				&& isReversing == newState.isReversing && isStrafingLeft == newState.isStrafingLeft && isStrafingRight == newState.isStrafingRight
+				&& isEmergencyStopping == newState.isEmergencyStopping;
 	}
 
 	@Override
-	public void setApplicationContext(ApplicationContext applicationContext)
-			throws BeansException {
+	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		spring = applicationContext;
 	}
 

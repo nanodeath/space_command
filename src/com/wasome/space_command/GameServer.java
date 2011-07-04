@@ -105,9 +105,6 @@ public class GameServer extends Game {
 		applyClientUpdates();
 		
 		// evaluate world stuff
-//		for (Entity entity : updatableThings) {
-//			
-//		}
 		for (Entity entity : updatableThings) {
 			entity.update();
 		}
