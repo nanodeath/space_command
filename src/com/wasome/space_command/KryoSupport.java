@@ -7,6 +7,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.wasome.space_command.components.Engine;
 import com.wasome.space_command.data.Point;
 import com.wasome.space_command.server.ClientUpdate;
+import com.wasome.space_command.server.SelectiveEntitySync;
 import com.wasome.space_command.server.ServerMessage;
 import com.wasome.space_command.server.WorldSync;
 
@@ -21,6 +22,6 @@ public class KryoSupport {
 		kryo.register(byte[].class);
 		kryo.register(Engine.Direction.class);
 		kryo.register(Point.class);
-		kryo.getRegisteredClass(Engine.Direction.class);
+		kryo.register(SelectiveEntitySync.class);
 	}
 }

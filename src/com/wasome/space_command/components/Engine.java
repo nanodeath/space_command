@@ -75,7 +75,7 @@ public abstract class Engine extends ShipComponent implements SentToClient {
 	}
 
 	public void setLocalPosition(Point<Float> point) {
-		server.updateEntityOnClient(this);
+		server.updateEntityOnClients(this);
 		localPosition = point;
 	}
 
@@ -85,7 +85,7 @@ public abstract class Engine extends ShipComponent implements SentToClient {
 	}
 
 	public void setFacingDirection(Direction d) {
-		server.updateEntityOnClient(this);
+		server.updateEntityOnClients(this);
 		pointingTowards = d;
 	}
 
@@ -127,7 +127,7 @@ public abstract class Engine extends ShipComponent implements SentToClient {
 	 */
 	public void setOutput(float percent) {
 		System.out.println("Updating thrusters!");
-		server.updateEntityOnClient(this);
+		server.updateEntityOnClients(this);
 		currentThrustPercent = MathUtils.clamp(percent, 0f, 1f);
 		force = Direction.toForce(pointingTowards, currentThrustPercent * maximumThrust);
 	}

@@ -1,20 +1,61 @@
 package com.wasome.space_command.server;
 
+import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
+import com.esotericsoftware.kryonet.Connection;
 import com.wasome.space_command.Entity;
 import com.wasome.space_command.GameClient;
+import com.wasome.space_command.GameServer;
+import com.wasome.space_command.SentToClient;
+import com.wasome.space_command.util.WorldElementCollection;
 
-public class WorldSync implements ServerMessage {
-	public List<ClientUpdate> clientUpdates;
+@Component
+@Scope("prototype")
+public class WorldSync extends EntitySync implements ApplicationContextAware {
+	private transient ApplicationContext context;
+	@Autowired
+	private transient GameServer server;
+	private transient int clientId;
 
 	public WorldSync(){}
-	public WorldSync(List<ClientUpdate> clientUpdates){
-		this.clientUpdates = clientUpdates;
+	
+	public void setConnection(Connection clientConnection){
+		this.clientId = clientConnection.getID();
+	}
+	
+	@Override
+	public void prepareToSend(){
+		clientUpdates = new ArrayList<ClientUpdate>();
+		for (Entity entity : server.updatableThings) {
+			if (entity instanceof SentToClient) {
+				server.trackEntity(entity);
+				
+				ClientUpdate cu = context.getBean(ClientUpdate.class);
+				cu.setEntity(entity);
+				clientUpdates.add(cu);
+			}
+			WorldElementCollection subEntities = entity.getSubEntities();
+			if (subEntities != null) {
+				for (Entity subEntity : subEntities.transitiveClosureUpdatable()) {
+					if (subEntity instanceof SentToClient) {
+						server.trackEntity(entity);
+						
+						ClientUpdate cu = context.getBean(ClientUpdate.class);
+						cu.setEntity(subEntity);
+						clientUpdates.add(cu);
+					}
+				}
+			}
+		}
 	}
 	
 	@Override
@@ -33,4 +74,13 @@ public class WorldSync implements ServerMessage {
 		}
 	}
 
+	@Override
+	public int getClientId() {
+		return clientId;
+	}
+	
+	@Override
+	public void setApplicationContext(ApplicationContext context) throws BeansException {
+		this.context = context;
+	}
 }

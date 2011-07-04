@@ -1,5 +1,6 @@
 package com.wasome.space_command;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -18,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-import com.esotericsoftware.kryonet.Server;
 import com.wasome.space_command.player.Player;
 import com.wasome.space_command.server.BodyFactory;
 import com.wasome.space_command.util.Timer;
@@ -35,7 +35,8 @@ public abstract class Game extends BasicGame implements ApplicationContextAware 
 	protected Input input;
 	protected World world;
 	protected ApplicationContext spring;
-	protected final Set<Entity> updatableThings = new LinkedHashSet<Entity>();
+	protected final Set<Entity> _updatableThings = new LinkedHashSet<Entity>();
+	public final Set<Entity> updatableThings = Collections.unmodifiableSet(_updatableThings);
 	@Autowired
 	protected Timer timer;
 	@Resource(name = "player1")
@@ -78,7 +79,7 @@ public abstract class Game extends BasicGame implements ApplicationContextAware 
 	protected void firstUpdate() throws SlickException {}
 
 	public void addToGameWorld(Entity entity) {
-		updatableThings.add(entity);
+		_updatableThings.add(entity);
 	}
 
 	public World getWorld() {

@@ -41,7 +41,7 @@ public class ServerBodyFactory implements BodyFactory {
 
 				// checking for side effects
 				if (name.startsWith("apply") || name.startsWith("set")) {
-					game.updateEntityOnClient(bodyToEntityMap.get(enhancedObject));
+					game.updateEntityOnClients(bodyToEntityMap.get(enhancedObject));
 				}
 				return methodProxy.invokeSuper(enhancedObject, argumentArray);
 			}

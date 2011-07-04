@@ -80,10 +80,6 @@ public class GameClient extends Game {
 		Space space = spring.getBean(Space.class);
 		addToGameWorld(space);
 
-//		Ship mainShip = spring.getBean(BasicShip.class);
-//		addToGameWorld(mainShip);clientUpdates.add(new ClientUpdate(entity));
-//		mainShip.initializeAtLocation(new Point<Float>(5f, 10f));
-
 		addToGameWorld(player1);
 		
 		try {
@@ -161,7 +157,7 @@ public class GameClient extends Game {
 			entity.setEntityId(entityId);
 			entity.setIsNew(true);
 			entities.put(entityId, entity);
-			updatableThings.add(entity);
+			_updatableThings.add(entity);
 			addToGameWorld(entity);
 			System.out.println("Creating entity on the client: " + entity.toString());
 		} else {

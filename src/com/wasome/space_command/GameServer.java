@@ -3,15 +3,14 @@ package com.wasome.space_command;
 import static java.lang.System.currentTimeMillis;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-import java.util.Set;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import org.newdawn.fizzy.World;
 import org.newdawn.slick.AppGameContainer;
@@ -26,9 +25,10 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import com.wasome.space_command.data.Point;
-import com.wasome.space_command.server.ClientUpdate;
+import com.wasome.space_command.server.SelectiveEntitySync;
+import com.wasome.space_command.server.ServerMessage;
+import com.wasome.space_command.server.ServerMessage.Audience;
 import com.wasome.space_command.server.WorldSync;
-import com.wasome.space_command.util.WorldElementCollection;
 
 public class GameServer extends Game {
 	@Autowired
@@ -36,7 +36,8 @@ public class GameServer extends Game {
 
 	private final Queue<ClientState> updatesFromClient = new ConcurrentLinkedQueue<ClientState>();
 	public static final Map<Integer, ClientState> clientStates = new HashMap<Integer, ClientState>();
-	private final Set<Entity> entitiesToUpdate = new LinkedHashSet<Entity>();
+	private final BlockingQueue<Entity> entitiesToUpdate = new LinkedBlockingQueue<Entity>();
+	private final Queue<ServerMessage> messagesToSend = new ConcurrentLinkedQueue<ServerMessage>();
 
 	public static UnicodeFont FONT;
 
@@ -58,21 +59,9 @@ public class GameServer extends Game {
 				} else if (object instanceof String) {
 					String message = (String) object;
 					if (message.equals("world_sync")) {
-						List<ClientUpdate> clientUpdates = new ArrayList<ClientUpdate>();
-						for (Entity entity : updatableThings) {
-							if (entity instanceof SentToClient) {
-								updateEntityOnClient(entity);
-							}
-							WorldElementCollection subEntities = entity.getSubEntities();
-							if (subEntities != null) {
-								for (Entity subEntity : subEntities.transitiveClosureUpdatable()) {
-									if (subEntity instanceof SentToClient) {
-										updateEntityOnClient(subEntity);
-									}
-								}
-							}
-						}
-						connection.sendTCP(new WorldSync(clientUpdates));
+						WorldSync syncUp = spring.getBean(WorldSync.class);
+						syncUp.setConnection(connection);
+						messagesToSend.add(syncUp);
 					}
 				}
 			}
@@ -104,7 +93,7 @@ public class GameServer extends Game {
 
 	@Override
 	public void doRender() {
-		for (Entity entity : updatableThings) {
+		for (Entity entity : _updatableThings) {
 			entity.render();
 		}
 	}
@@ -115,26 +104,30 @@ public class GameServer extends Game {
 		applyClientUpdates();
 
 		// evaluate world stuff
-		for (Entity entity : updatableThings) {
+		for (Entity entity : _updatableThings) {
 			entity.update();
 		}
 		world.update(((float) msDelta) / 1000f);
 
-		// send state updates
+		// prepare updates
 		if (!entitiesToUpdate.isEmpty()) {
-			List<ClientUpdate> clientUpdates = new ArrayList<ClientUpdate>(entitiesToUpdate.size());
-			Iterator<Entity> it = entitiesToUpdate.iterator();
-			while (it.hasNext()) {
-				Entity entity = it.next();
-				ClientUpdate update = new ClientUpdate();
-				update.setApplicationContext(spring);
-				update.setEntity(entity);
-				clientUpdates.add(update);
-				it.remove();
+			List<Entity> entitiesToUpdateNow = new LinkedList<Entity>();
+			entitiesToUpdate.drainTo(entitiesToUpdateNow);
+			SelectiveEntitySync syncUp = spring.getBean(SelectiveEntitySync.class);
+			syncUp.setEntitiesToUpdate(entitiesToUpdateNow);
+			messagesToSend.add(syncUp);
+		}
+		
+		// finally send all the updates!
+		ServerMessage message;
+		while((message = messagesToSend.poll()) != null){
+			int clientId = message.getClientId();
+			message.prepareToSend();
+			if(clientId == Audience.EVERYBODY){
+				server.sendToAllTCP(message);
+			} else {
+				server.sendToTCP(clientId, message);
 			}
-			WorldSync sync = new WorldSync(clientUpdates);
-			server.sendToAllTCP(sync);
-			entitiesToUpdate.clear();
 		}
 	}
 
@@ -173,12 +166,16 @@ public class GameServer extends Game {
 	public boolean isServer() {
 		return true;
 	}
-
-	public void updateEntityOnClient(Entity enhancedObject) {
-		System.out.println("Updating " + enhancedObject.toString() + " on client");
+	
+	public void trackEntity(Entity enhancedObject){
 		if (!entities.containsKey(enhancedObject.entityId)) {
 			entities.put(enhancedObject.entityId, enhancedObject);
 		}
+	}
+
+	public void updateEntityOnClients(Entity enhancedObject) {
+		System.out.println("Updating " + enhancedObject.toString() + " on client");
+		trackEntity(enhancedObject);
 		entitiesToUpdate.add(enhancedObject);
 	}
 }
