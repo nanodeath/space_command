@@ -25,6 +25,9 @@ abstract public class Entity implements ApplicationContextAware {
 	
 	@Autowired(required=false)
 	protected GameClient client;
+	
+	@Autowired(required=false)
+	protected GameServer server;
 
 	protected Image image;
 

@@ -61,9 +61,7 @@ public class GameClient extends Game {
 
 			@Override
 			public void received(Connection connection, Object object) {
-				if (object instanceof ServerState) {
-					
-				} else if(object instanceof ServerMessage){
+				if(object instanceof ServerMessage){
 					serverUpdates.add((ServerMessage)object);
 				}
 			}
