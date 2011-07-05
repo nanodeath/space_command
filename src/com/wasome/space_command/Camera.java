@@ -11,7 +11,7 @@ import com.wasome.space_command.data.Point;
 public class Camera {
 	private float x;
 	private float y;
-	private float screenHeight;
+	private float screenHeight, screenWidth;
 	/**
 	 * By what factor is a screen unit larger than a world unit?
 	 */
@@ -24,8 +24,9 @@ public class Camera {
 		x = y = 0f;
 	}
 	
-	public void init(){
+	public void firstUpdate(){
 		screenHeight = game.gameContainer.getHeight();
+		screenWidth = game.gameContainer.getWidth();
 	}
 
 	/**
@@ -106,5 +107,11 @@ public class Camera {
 	
 	public final float getScale() {
 		return scale;
+	}
+	
+	public void centerOnEntity(Entity e){
+		Point<Float> center = scaleWorldToScreen(e.getBody().getX(), e.getBody().getY());
+		x = -center.x + screenWidth / 2;
+		y = center.y - screenHeight / 2;
 	}
 }

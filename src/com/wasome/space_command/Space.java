@@ -6,6 +6,8 @@ import java.util.List;
 import org.newdawn.fizzy.BoundingBox;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
+import org.newdawn.slick.SlickException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,10 +21,22 @@ public class Space extends Entity {
 	private List<Ship> selectedShips = new LinkedList<Ship>();
 	@Autowired
 	private Camera camera;
+	
+	public Space() throws SlickException {
+		super();
+		image = new Image("res/nebula.jpg");
+	}
 
 	@Override
 	public void render() {
 		Graphics g = game.getGraphics();
+		float screenLeftX = camera.getX() % image.getWidth();
+		float screenLeftY = camera.getY() % image.getHeight();
+		g.drawImage(image, screenLeftX, screenLeftY);
+		g.drawImage(image, screenLeftX, screenLeftY - image.getHeight());
+		g.drawImage(image, screenLeftX - image.getWidth(), screenLeftY);
+		g.drawImage(image, screenLeftX - image.getWidth(), screenLeftY - image.getHeight());
+		
 		for (Ship ship : selectedShips) {
 			BoundingBox bb = ship.getBody().getBoundingBox();
 			float worldWidth = Math.abs(bb.upperRight.x - bb.lowerLeft.x);

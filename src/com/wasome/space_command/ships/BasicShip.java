@@ -28,8 +28,6 @@ public class BasicShip extends Ship {
 	@Autowired
 	private Camera camera;
 
-	private Image image;
-
 	public BasicShip() throws SlickException {
 		super();
 		size = new Point<Float>(1f, 1f);

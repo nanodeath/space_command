@@ -27,6 +27,8 @@ import com.wasome.space_command.behavior.Visible;
 import com.wasome.space_command.network.ClientState;
 import com.wasome.space_command.network.ServerMessage;
 import com.wasome.space_command.player.Player;
+import com.wasome.space_command.ships.BasicShip;
+import com.wasome.space_command.ships.Ship;
 import com.wasome.space_command.util.Timer;
 import com.wasome.space_command.util.ZIndexEntityComparator;
 
@@ -40,9 +42,14 @@ public class GameClient extends Game {
 
 	@Autowired
 	private Timer timer;
+	
+	@Autowired
+	private Camera camera;
 
 	@Resource(name = "player1")
 	private Player player1;
+	
+	private Entity cameraTarget;
 
 	public static UnicodeFont FONT;
 
@@ -85,6 +92,8 @@ public class GameClient extends Game {
 
 		addToGameWorld(player1);
 		
+		camera.firstUpdate();
+		
 		try {
 			client.connect(5000, "localhost", 54555, 54777);
 		} catch (IOException e) {
@@ -94,6 +103,9 @@ public class GameClient extends Game {
 
 	@Override
 	public void doRender() {
+		if(cameraTarget != null){
+			camera.centerOnEntity(cameraTarget);
+		}
 		for (Entity entity : _renderableThings) {
 			entity.render();
 		}
@@ -154,6 +166,7 @@ public class GameClient extends Game {
 	}
 
 	public Entity getOrCreateEntity(int entityId, Class<? extends Entity> entityClass) {
+		
 		Entity entity = entities.get(entityId);
 		if(entity == null){
 			entity = spring.getBean(entityClass);
@@ -165,6 +178,9 @@ public class GameClient extends Game {
 			System.out.println("Creating entity on the client: " + entity.toString());
 		} else {
 			System.out.println("Fetching entity on the client: " + entity.toString());
+		}
+		if(entityClass == BasicShip.class){
+			cameraTarget = entity; 
 		}
 		return entity;
 	}
