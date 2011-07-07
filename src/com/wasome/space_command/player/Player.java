@@ -143,4 +143,8 @@ public class Player extends Entity {
 			g.drawString(display, x, y + lineSpacing * i);
 		}
 	}
+
+	public int getPlayerId() {
+		return 1;
+	}
 }

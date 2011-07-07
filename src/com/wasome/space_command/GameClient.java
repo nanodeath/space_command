@@ -24,6 +24,7 @@ import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.wasome.space_command.behavior.Visible;
+import com.wasome.space_command.network.ClientMessage;
 import com.wasome.space_command.network.ClientState;
 import com.wasome.space_command.network.ServerMessage;
 import com.wasome.space_command.player.Player;
@@ -38,17 +39,18 @@ public class GameClient extends Game {
 	private ClientState previousState;
 
 	private static final Set<Entity> _renderableThings = new TreeSet<Entity>(new ZIndexEntityComparator());
-	private final Queue<ServerMessage> serverUpdates = new ConcurrentLinkedQueue<ServerMessage>();
+	private final Queue<ServerMessage> updatesFromServer = new ConcurrentLinkedQueue<ServerMessage>();
+	private final Queue<ClientMessage> updatesToServer = new ConcurrentLinkedQueue<ClientMessage>();
 
 	@Autowired
 	private Timer timer;
-	
+
 	@Autowired
 	private Camera camera;
 
 	@Resource(name = "player1")
-	private Player player1;
-	
+	private Player player;
+
 	private Entity cameraTarget;
 
 	public static UnicodeFont FONT;
@@ -62,7 +64,7 @@ public class GameClient extends Game {
 
 		KryoSupport.initializeKryo(client.getKryo());
 		client.addListener(new Listener() {
-			
+
 			@Override
 			public void connected(Connection connection) {
 				System.out.println("Connected!  sending world_sync");
@@ -71,8 +73,8 @@ public class GameClient extends Game {
 
 			@Override
 			public void received(Connection connection, Object object) {
-				if(object instanceof ServerMessage){
-					serverUpdates.add((ServerMessage)object);
+				if (object instanceof ServerMessage) {
+					updatesFromServer.add((ServerMessage) object);
 				}
 			}
 		});
@@ -90,10 +92,10 @@ public class GameClient extends Game {
 		Space space = spring.getBean(Space.class);
 		addToGameWorld(space);
 
-		addToGameWorld(player1);
-		
+		addToGameWorld(player);
+
 		camera.firstUpdate();
-		
+
 		try {
 			client.connect(5000, "localhost", 54555, 54777);
 		} catch (IOException e) {
@@ -103,7 +105,7 @@ public class GameClient extends Game {
 
 	@Override
 	public void doRender() {
-		if(cameraTarget != null){
+		if (cameraTarget != null) {
 			camera.centerOnEntity(cameraTarget);
 		}
 		for (Entity entity : _renderableThings) {
@@ -117,33 +119,40 @@ public class GameClient extends Game {
 	public void doUpdate() {
 		// process updates
 		applyServerUpdates();
-		
+
 		// update my world
 		world.update(((float) msDelta) / 1000f);
 
 		// send inputs
 		ClientState newState = previousState.dupe();
 		newState.updateInput(input);
-		if (!previousState.equivalentTo(newState)
-				|| currentTimeMillis() - lastSubmissionTime >= 2000l) {
-			System.out.println("client: accelerating: "
-					+ newState.isAccelerating);
+		if (!previousState.equivalentTo(newState) || currentTimeMillis() - lastSubmissionTime >= 2000l) {
+			System.out.println("client: accelerating: " + newState.isAccelerating);
 			lastSubmissionTime = currentTimeMillis();
-			client.sendUDP(newState);
+			client.sendTCP(newState);
 			previousState = newState;
 		}
+		
+		// send updates/messages
+		sendServerUpdates();
 	}
 
 	private void applyServerUpdates() {
 		ServerMessage state;
-		while ((state = serverUpdates.poll()) != null) {
+		while ((state = updatesFromServer.poll()) != null) {
 			state.process(spring, this);
+		}
+	}
+	
+	private void sendServerUpdates(){
+		ClientMessage message;
+		while((message = updatesToServer.poll()) != null){
+			client.sendTCP(message);
 		}
 	}
 
 	public static void main(String[] args) throws SlickException {
-		AbstractXmlApplicationContext spring = new FileSystemXmlApplicationContext(
-				"config/space_command.client.xml");
+		AbstractXmlApplicationContext spring = new FileSystemXmlApplicationContext("config/space_command.client.xml");
 		Game game = spring.getBean(Game.class);
 
 		AppGameContainer app = new AppGameContainer(game);
@@ -153,7 +162,7 @@ public class GameClient extends Game {
 		// Run logic every 20 ms (50 times per second)
 		app.setMinimumLogicUpdateInterval(20);
 		app.setMaximumLogicUpdateInterval(20);
-		
+
 		app.setTargetFrameRate(60);
 		app.setVSync(true);
 		app.setDisplayMode(800, 600, false);
@@ -166,9 +175,9 @@ public class GameClient extends Game {
 	}
 
 	public Entity getOrCreateEntity(int entityId, Class<? extends Entity> entityClass) {
-		
+
 		Entity entity = entities.get(entityId);
-		if(entity == null){
+		if (entity == null) {
 			entity = spring.getBean(entityClass);
 			entity.setEntityId(entityId);
 			entity.setIsNew(true);
@@ -179,12 +188,14 @@ public class GameClient extends Game {
 		} else {
 			System.out.println("Fetching entity on the client: " + entity.toString());
 		}
-		if(entityClass == BasicShip.class){
-			cameraTarget = entity; 
+		if (entityClass == BasicShip.class && cameraTarget == null) {
+			cameraTarget = entity;
+
+			((Ship) entity).takeControl(player.getPlayerId());
 		}
 		return entity;
 	}
-	
+
 	@Override
 	public boolean closeRequested() {
 		client.close();
@@ -204,8 +215,16 @@ public class GameClient extends Game {
 		_renderableThings.remove(e);
 		entities.remove(e.getEntityId());
 		Body<?> body;
-		if((body = e.getBody()) != null){
+		if ((body = e.getBody()) != null) {
 			world.remove(body);
 		}
+	}
+
+	public void sendToServer(ClientMessage clientMessage) {
+		updatesToServer.add(clientMessage);
+	}
+
+	public Player getPlayer() {
+		return player;
 	}
 }

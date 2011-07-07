@@ -25,7 +25,7 @@ public class ClientState implements ApplicationContextAware {
 	public boolean isShooting;
 
 	@Resource(name = "player1")
-	private transient Player player1;
+	private transient Player player;
 
 	public int playerId = 1;
 
@@ -36,18 +36,25 @@ public class ClientState implements ApplicationContextAware {
 	public ClientState dupe() {
 		ClientState cs = spring.getBean(ClientState.class);
 		cs.isAccelerating = isAccelerating;
+		cs.isTurningLeft = isTurningLeft;
+		cs.isTurningRight = isTurningRight;
+		cs.isReversing = isReversing;
+		cs.isStrafingLeft = isStrafingLeft;
+		cs.isStrafingRight = isStrafingRight;
+		cs.isEmergencyStopping = isEmergencyStopping;
+		cs.isShooting = isShooting;
 		return cs;
 	}
 
 	public void updateInput(Input input) {
-		isAccelerating = player1.isInputDown(PlayerInput.ACCELERATE);
-		isTurningLeft = player1.isInputDown(PlayerInput.TURN_LEFT);
-		isTurningRight = player1.isInputDown(PlayerInput.TURN_RIGHT);
-		isReversing = player1.isInputDown(PlayerInput.REVERSE);
-		isStrafingLeft = player1.isInputDown(PlayerInput.STRAFE_LEFT);
-		isStrafingRight = player1.isInputDown(PlayerInput.STRAFE_RIGHT);
-		isEmergencyStopping = player1.isInputDown(PlayerInput.EMERGENCY_STOP);
-		isShooting = player1.isInputDown(PlayerInput.SHOOT_GUNS);
+		isAccelerating = player.isInputDown(PlayerInput.ACCELERATE);
+		isTurningLeft = player.isInputDown(PlayerInput.TURN_LEFT);
+		isTurningRight = player.isInputDown(PlayerInput.TURN_RIGHT);
+		isReversing = player.isInputDown(PlayerInput.REVERSE);
+		isStrafingLeft = player.isInputDown(PlayerInput.STRAFE_LEFT);
+		isStrafingRight = player.isInputDown(PlayerInput.STRAFE_RIGHT);
+		isEmergencyStopping = player.isInputDown(PlayerInput.EMERGENCY_STOP);
+		isShooting = player.isInputDown(PlayerInput.SHOOT_GUNS);
 	}
 
 	public boolean equivalentTo(ClientState newState) {

@@ -13,23 +13,23 @@ import org.newdawn.slick.Image;
 import com.esotericsoftware.kryo.Kryo;
 import com.wasome.space_command.Entity;
 import com.wasome.space_command.components.Engine;
-import com.wasome.space_command.components.ShipComponent;
 import com.wasome.space_command.components.Engine.Direction;
+import com.wasome.space_command.components.ShipComponent;
 import com.wasome.space_command.data.Point;
 import com.wasome.space_command.flight_plan.FlightPlan;
 import com.wasome.space_command.flight_plan.OrientTowardsPoint;
 import com.wasome.space_command.network.SentToClient;
+import com.wasome.space_command.network.TakeControl;
 import com.wasome.space_command.player.Inventory;
-import com.wasome.space_command.player.Player;
 import com.wasome.space_command.util.CollectionUtil;
 import com.wasome.space_command.util.WorldElementCollection;
 
 public abstract class Ship extends Entity implements SentToClient {
 	protected FlightPlan flightPlan;
-	protected boolean directControlEnabled;
 	protected Point<Float> size;
 	protected Inventory inventory;
-	protected Player player;
+	protected int playerId = 1; // TODO this should be fixed, obviously
+	protected boolean playerControlling = false;
 
 	{
 		setZIndex(0);
@@ -173,14 +173,14 @@ public abstract class Ship extends Entity implements SentToClient {
 		}
 		return engines;
 	}
-
-	public void enableDirectControl() {
-		directControlEnabled = true;
-	}
-
-	public void disableDirectControl() {
-		directControlEnabled = false;
-	}
+//
+//	public void enableDirectControl() {
+//		directControlEnabled = true;
+//	}
+//
+//	public void disableDirectControl() {
+//		directControlEnabled = false;
+//	}
 
 	public Body<Ship> getBody() {
 		return body;
@@ -205,8 +205,8 @@ public abstract class Ship extends Entity implements SentToClient {
 		return inventory;
 	}
 
-	public Player getPlayer() {
-		return player;
+	public int getPlayerId() {
+		return playerId;
 	}
 
 	@Override
@@ -231,5 +231,21 @@ public abstract class Ship extends Entity implements SentToClient {
 		body.setVelocity(buffer.getFloat(), buffer.getFloat());
 		body.setAngularVelocity(buffer.getFloat());
 		body.setRotation(buffer.getFloat());
+	}
+
+	/**
+	 * Called on the client
+	 * @param player
+	 */
+	public void takeControl(int playerId) {
+		if (server != null) {
+			server.enableControlOfShip(playerId, this);
+		} else if (client != null) {
+			client.sendToServer(new TakeControl(playerId, this));
+		}
+	}
+	
+	public void setIsPlayerControlling(boolean flag){
+		playerControlling = flag;
 	}
 }

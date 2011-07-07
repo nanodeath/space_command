@@ -24,11 +24,13 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import com.wasome.space_command.data.Point;
+import com.wasome.space_command.network.ClientMessage;
 import com.wasome.space_command.network.ClientState;
 import com.wasome.space_command.network.SelectiveEntitySync;
 import com.wasome.space_command.network.ServerMessage;
 import com.wasome.space_command.network.WorldSync;
 import com.wasome.space_command.network.ServerMessage.Audience;
+import com.wasome.space_command.player.Player;
 import com.wasome.space_command.ships.BasicShip;
 import com.wasome.space_command.ships.Ship;
 
@@ -37,9 +39,12 @@ public class GameServer extends Game {
 	protected Server server;
 
 	private final Queue<ClientState> updatesFromClient = new ConcurrentLinkedQueue<ClientState>();
+	private final Queue<ClientMessage> messagesFromClient = new ConcurrentLinkedQueue<ClientMessage>();
+	
 	public static final Map<Integer, ClientState> clientStates = new HashMap<Integer, ClientState>();
 	private final Set<Entity> entitiesToUpdate = new LinkedHashSet<Entity>();
 	private final Queue<ServerMessage> messagesToSend = new ConcurrentLinkedQueue<ServerMessage>();
+	private final Map<Integer, Ship> playerControlledShips = new HashMap<Integer, Ship>();
 
 	public static UnicodeFont FONT;
 
@@ -51,6 +56,7 @@ public class GameServer extends Game {
 	public void init(GameContainer container) throws SlickException {
 		com.esotericsoftware.minlog.Log.set(com.esotericsoftware.minlog.Log.LEVEL_DEBUG);
 		KryoSupport.initializeKryo(server.getKryo());
+		final GameServer gameServer = this;
 		server.addListener(new Listener() {
 			@Override
 			public void received(Connection connection, Object object) {
@@ -65,6 +71,8 @@ public class GameServer extends Game {
 						syncUp.setConnection(connection);
 						messagesToSend.add(syncUp);
 					}
+				} else if(object instanceof ClientMessage){
+					messagesFromClient.add((ClientMessage)object);
 				}
 			}
 		});
@@ -104,6 +112,9 @@ public class GameServer extends Game {
 	public void doUpdate() {
 		// process updates
 		applyClientUpdates();
+		
+		// process messages
+		applyClientMessages();
 
 		// evaluate world stuff
 		Iterator<Entity> updatableIterator = _updatableThings.iterator();
@@ -142,6 +153,13 @@ public class GameServer extends Game {
 		ClientState state;
 		while ((state = updatesFromClient.poll()) != null) {
 			clientStates.put(state.playerId, state);
+		}
+	}
+
+	private void applyClientMessages() {
+		ClientMessage message;
+		while ((message = messagesFromClient.poll()) != null) {
+			message.process(spring, this);
 		}
 	}
 
@@ -184,5 +202,19 @@ public class GameServer extends Game {
 		System.out.println("Updating " + enhancedObject.toString() + " on client");
 		trackEntity(enhancedObject);
 		entitiesToUpdate.add(enhancedObject);
+	}
+
+	public Player getPlayer(int playerId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void enableControlOfShip(int playerId, Ship ship) {
+		Ship currentShip = playerControlledShips.get(playerId);
+		if(currentShip != null){
+			currentShip.setIsPlayerControlling(false);
+		}
+		playerControlledShips.put(playerId, ship);
+		ship.setIsPlayerControlling(true);
 	}
 }

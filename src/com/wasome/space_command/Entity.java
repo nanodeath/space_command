@@ -3,6 +3,7 @@ package com.wasome.space_command;
 import org.newdawn.fizzy.Body;
 import org.newdawn.slick.Image;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;

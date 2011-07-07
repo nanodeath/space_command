@@ -38,7 +38,7 @@ public class Inventory extends ShipComponent {
 
 	@Override
 	public void update() {
-		if (ship.getPlayer().isPressed(SHOW_INVENTORY)) {
+		if(client != null && client.getPlayer().isPressed(SHOW_INVENTORY)) {
 			visible = !visible;
 		}
 	}

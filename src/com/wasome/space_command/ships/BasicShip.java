@@ -33,9 +33,6 @@ public class BasicShip extends Ship {
 		size = new Point<Float>(1f, 1f);
 
 		image = new Image("res/spaceship.png");
-
-		enableDirectControl();
-
 	}
 
 	@Override
@@ -84,8 +81,6 @@ public class BasicShip extends Ship {
 			// game.addToGameWorld(component);
 			// }
 		}
-		player = spring.getBean("player1", Player.class);
-		player.validateAllKeysAssigned();
 	}
 
 	@Override
@@ -103,8 +98,8 @@ public class BasicShip extends Ship {
 	public void update() {
 		updateComponents();
 		performFlightPlan();
-		if (directControlEnabled && player != null) {
-			ClientState state = GameServer.clientStates.get(1);
+		if (playerControlling) {
+			ClientState state = GameServer.clientStates.get(playerId);
 			if (state == null) {
 				return;
 			}
