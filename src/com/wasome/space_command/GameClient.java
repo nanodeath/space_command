@@ -23,7 +23,6 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
-import com.sun.org.apache.regexp.internal.REUtil;
 import com.wasome.space_command.behavior.Visible;
 import com.wasome.space_command.network.ClientMessage;
 import com.wasome.space_command.network.ClientState;
@@ -31,7 +30,6 @@ import com.wasome.space_command.network.RequestWorldSync;
 import com.wasome.space_command.network.ServerMessage;
 import com.wasome.space_command.player.Player;
 import com.wasome.space_command.ships.BasicShip;
-import com.wasome.space_command.ships.Ship;
 import com.wasome.space_command.util.Timer;
 import com.wasome.space_command.util.ZIndexEntityComparator;
 
@@ -194,7 +192,7 @@ public class GameClient extends Game {
 		if (entityClass == BasicShip.class && cameraTarget == null) {
 			cameraTarget = entity;
 
-			((Ship) entity).takeControl(player.getPlayerId());
+//			((Ship) entity).takeControl(0);
 		}
 		return entity;
 	}
@@ -229,5 +227,9 @@ public class GameClient extends Game {
 
 	public Player getPlayer() {
 		return player;
+	}
+
+	public void setPlayerId(int playerId) {
+		
 	}
 }

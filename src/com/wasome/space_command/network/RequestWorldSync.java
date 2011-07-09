@@ -23,11 +23,6 @@ public class RequestWorldSync implements ClientMessage {
 	}
 
 	@Override
-	public int getPlayerId() {
-		return 0;
-	}
-
-	@Override
 	public void setClientConnection(Connection clientConnection) {
 		this.clientConnection = clientConnection;
 	}

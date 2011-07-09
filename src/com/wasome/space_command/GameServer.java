@@ -23,14 +23,12 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
-import com.wasome.space_command.data.Point;
 import com.wasome.space_command.network.ClientMessage;
 import com.wasome.space_command.network.ClientState;
+import com.wasome.space_command.network.PlayerConnected;
 import com.wasome.space_command.network.SelectiveEntitySync;
 import com.wasome.space_command.network.ServerMessage;
 import com.wasome.space_command.network.ServerMessage.Audience;
-import com.wasome.space_command.player.Player;
-import com.wasome.space_command.ships.BasicShip;
 import com.wasome.space_command.ships.Ship;
 
 public class GameServer extends Game {
@@ -56,6 +54,15 @@ public class GameServer extends Game {
 		com.esotericsoftware.minlog.Log.set(com.esotericsoftware.minlog.Log.LEVEL_DEBUG);
 		KryoSupport.initializeKryo(server.getKryo());
 		server.addListener(new Listener() {
+			@Override
+			public void connected(Connection connection) {
+				System.out.println("Connection!");
+				
+				PlayerConnected playerConnected = spring.getBean(PlayerConnected.class);
+				playerConnected.setConnection(connection);
+				messagesToSend.add(playerConnected);
+			}
+			
 			@Override
 			public void received(Connection connection, Object object) {
 				if (object instanceof ClientState) {
@@ -86,12 +93,6 @@ public class GameServer extends Game {
 
 		Space space = spring.getBean(Space.class);
 		addToGameWorld(space);
-
-		Ship mainShip = spring.getBean(BasicShip.class);
-		addToGameWorld(mainShip);
-		mainShip.initializeAtLocation(new Point<Float>(6.25f, 4.6875f));
-
-		addToGameWorld(player1);
 	}
 
 	@Override
@@ -197,17 +198,12 @@ public class GameServer extends Game {
 		entitiesToUpdate.add(enhancedObject);
 	}
 
-	public Player getPlayer(int playerId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public void enableControlOfShip(int playerId, Ship ship) {
-		Ship currentShip = playerControlledShips.get(playerId);
+	public void enableControlOfShip(int clientId, Ship ship) {
+		Ship currentShip = playerControlledShips.get(clientId);
 		if(currentShip != null){
 			currentShip.setIsPlayerControlling(false);
 		}
-		playerControlledShips.put(playerId, ship);
+		playerControlledShips.put(clientId, ship);
 		ship.setIsPlayerControlling(true);
 	}
 }

@@ -18,7 +18,6 @@ import com.wasome.space_command.components.Engine.Direction;
 import com.wasome.space_command.data.Point;
 import com.wasome.space_command.network.ClientState;
 import com.wasome.space_command.player.Inventory;
-import com.wasome.space_command.player.Player;
 import com.wasome.space_command.weapons.Gun;
 
 @Component

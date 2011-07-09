@@ -25,5 +25,4 @@ public interface ClientMessage {
 	 * @param returnMessageQueue
 	 */
 	public void serverProcess(ApplicationContext context, GameServer server, Collection<ServerMessage> returnMessageQueue);
-	public int getPlayerId(); 
 }

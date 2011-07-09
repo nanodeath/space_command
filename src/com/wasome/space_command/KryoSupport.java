@@ -22,6 +22,6 @@ public class KryoSupport {
 		kryo.register(SelectiveEntitySync.class);
 		kryo.register(TakeControl.class);
 		kryo.register(RequestWorldSync.class);
-		
+		kryo.register(PlayerConnected.class);
 	}
 }

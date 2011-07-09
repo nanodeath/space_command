@@ -237,11 +237,11 @@ public abstract class Ship extends Entity implements SentToClient {
 	 * Called on the client
 	 * @param player
 	 */
-	public void takeControl(int playerId) {
+	public void takeControl(int clientId) {
 		if (server != null) {
-			server.enableControlOfShip(playerId, this);
+			server.enableControlOfShip(clientId, this);
 		} else if (client != null) {
-			client.sendToServer(new TakeControl(playerId, this));
+			client.sendToServer(new TakeControl(this));
 		}
 	}
 	

@@ -9,15 +9,13 @@ import com.wasome.space_command.GameServer;
 import com.wasome.space_command.ships.Ship;
 
 public class TakeControl implements ClientMessage {
-
-	private int playerId;
 	private int shipId;
+	private transient Connection clientConnection;
 
 	public TakeControl() {
 	}
 
-	public TakeControl(int playerId, Ship ship) {
-		this.playerId = playerId;
+	public TakeControl(Ship ship) {
 		shipId = ship.getEntityId();
 	}
 
@@ -28,15 +26,11 @@ public class TakeControl implements ClientMessage {
 	@Override
 	public void serverProcess(ApplicationContext context, GameServer server, Collection<ServerMessage> returnMessageQueue) {
 		Ship ship = (Ship) server.getEntity(shipId);
-		ship.takeControl(playerId);
-	}
-
-	@Override
-	public int getPlayerId() {
-		return playerId;
+		ship.takeControl(clientConnection.getID());
 	}
 
 	@Override
 	public void setClientConnection(Connection clientConnection) {
+		this.clientConnection = clientConnection;
 	}
 }
