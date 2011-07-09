@@ -23,9 +23,11 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
+import com.sun.org.apache.regexp.internal.REUtil;
 import com.wasome.space_command.behavior.Visible;
 import com.wasome.space_command.network.ClientMessage;
 import com.wasome.space_command.network.ClientState;
+import com.wasome.space_command.network.RequestWorldSync;
 import com.wasome.space_command.network.ServerMessage;
 import com.wasome.space_command.player.Player;
 import com.wasome.space_command.ships.BasicShip;
@@ -67,8 +69,9 @@ public class GameClient extends Game {
 
 			@Override
 			public void connected(Connection connection) {
-				System.out.println("Connected!  sending world_sync");
-				connection.sendTCP("world_sync");
+				System.out.println("Connected!  sending world sync request");
+				RequestWorldSync requestWorldSync = new RequestWorldSync();
+				connection.sendTCP(requestWorldSync);
 			}
 
 			@Override
@@ -132,7 +135,7 @@ public class GameClient extends Game {
 			client.sendTCP(newState);
 			previousState = newState;
 		}
-		
+
 		// send updates/messages
 		sendServerUpdates();
 	}
@@ -143,10 +146,10 @@ public class GameClient extends Game {
 			state.process(spring, this);
 		}
 	}
-	
-	private void sendServerUpdates(){
+
+	private void sendServerUpdates() {
 		ClientMessage message;
-		while((message = updatesToServer.poll()) != null){
+		while ((message = updatesToServer.poll()) != null) {
 			client.sendTCP(message);
 		}
 	}

@@ -6,20 +6,10 @@ import org.springframework.context.ApplicationContext;
 
 import com.esotericsoftware.kryonet.Connection;
 import com.wasome.space_command.GameServer;
-import com.wasome.space_command.ships.Ship;
 
-public class TakeControl implements ClientMessage {
+public class RequestWorldSync implements ClientMessage {
 
-	private int playerId;
-	private int shipId;
-
-	public TakeControl() {
-	}
-
-	public TakeControl(int playerId, Ship ship) {
-		this.playerId = playerId;
-		shipId = ship.getEntityId();
-	}
+	private transient Connection clientConnection;
 
 	@Override
 	public void clientPrepare() {
@@ -27,16 +17,19 @@ public class TakeControl implements ClientMessage {
 
 	@Override
 	public void serverProcess(ApplicationContext context, GameServer server, Collection<ServerMessage> returnMessageQueue) {
-		Ship ship = (Ship) server.getEntity(shipId);
-		ship.takeControl(playerId);
+		WorldSync sync = context.getBean(WorldSync.class);
+		sync.setConnection(clientConnection);
+		returnMessageQueue.add(sync);
 	}
 
 	@Override
 	public int getPlayerId() {
-		return playerId;
+		return 0;
 	}
 
 	@Override
 	public void setClientConnection(Connection clientConnection) {
+		this.clientConnection = clientConnection;
 	}
+
 }

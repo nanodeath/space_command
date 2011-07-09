@@ -28,7 +28,6 @@ import com.wasome.space_command.network.ClientMessage;
 import com.wasome.space_command.network.ClientState;
 import com.wasome.space_command.network.SelectiveEntitySync;
 import com.wasome.space_command.network.ServerMessage;
-import com.wasome.space_command.network.WorldSync;
 import com.wasome.space_command.network.ServerMessage.Audience;
 import com.wasome.space_command.player.Player;
 import com.wasome.space_command.ships.BasicShip;
@@ -56,7 +55,6 @@ public class GameServer extends Game {
 	public void init(GameContainer container) throws SlickException {
 		com.esotericsoftware.minlog.Log.set(com.esotericsoftware.minlog.Log.LEVEL_DEBUG);
 		KryoSupport.initializeKryo(server.getKryo());
-		final GameServer gameServer = this;
 		server.addListener(new Listener() {
 			@Override
 			public void received(Connection connection, Object object) {
@@ -64,15 +62,10 @@ public class GameServer extends Game {
 					ClientState state = (ClientState) object;
 					state.receivedAt = currentTimeMillis();
 					updatesFromClient.add(state);
-				} else if (object instanceof String) {
-					String message = (String) object;
-					if (message.equals("world_sync")) {
-						WorldSync syncUp = spring.getBean(WorldSync.class);
-						syncUp.setConnection(connection);
-						messagesToSend.add(syncUp);
-					}
 				} else if(object instanceof ClientMessage){
-					messagesFromClient.add((ClientMessage)object);
+					ClientMessage message = (ClientMessage)object;
+					message.setClientConnection(connection);
+					messagesFromClient.add(message);
 				}
 			}
 		});
@@ -128,14 +121,14 @@ public class GameServer extends Game {
 		}
 		world.update(((float) msDelta) / 1000f);
 
-		// prepare updates
+		// prepare entity updates
 		if (!entitiesToUpdate.isEmpty()) {
 			SelectiveEntitySync syncUp = spring.getBean(SelectiveEntitySync.class);
 			syncUp.setEntitiesToUpdate(entitiesToUpdate);
 			messagesToSend.add(syncUp);
 		}
 
-		// finally send all the updates!
+		// send all the updates!
 		ServerMessage message;
 		while ((message = messagesToSend.poll()) != null) {
 			int clientId = message.getClientId();
@@ -159,7 +152,7 @@ public class GameServer extends Game {
 	private void applyClientMessages() {
 		ClientMessage message;
 		while ((message = messagesFromClient.poll()) != null) {
-			message.process(spring, this);
+			message.serverProcess(spring, this, messagesToSend);
 		}
 	}
 

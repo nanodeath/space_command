@@ -1,8 +1,6 @@
 package com.wasome.space_command.network;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 import com.esotericsoftware.kryonet.Connection;
 import com.wasome.space_command.Entity;
-import com.wasome.space_command.GameClient;
 import com.wasome.space_command.GameServer;
 import com.wasome.space_command.util.WorldElementCollection;
 

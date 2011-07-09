@@ -21,5 +21,7 @@ public class KryoSupport {
 		kryo.register(Point.class);
 		kryo.register(SelectiveEntitySync.class);
 		kryo.register(TakeControl.class);
+		kryo.register(RequestWorldSync.class);
+		
 	}
 }

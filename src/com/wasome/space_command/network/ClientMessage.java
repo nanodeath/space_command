@@ -1,7 +1,10 @@
 package com.wasome.space_command.network;
 
+import java.util.Collection;
+
 import org.springframework.context.ApplicationContext;
 
+import com.esotericsoftware.kryonet.Connection;
 import com.wasome.space_command.GameServer;
 
 /**
@@ -10,7 +13,17 @@ import com.wasome.space_command.GameServer;
  *
  */
 public interface ClientMessage {
-	public void prepareToSend();
-	public void process(ApplicationContext context, GameServer server);
+	/**
+	 * Send from the client to the server.
+	 */
+	public void clientPrepare();
+	public void setClientConnection(Connection clientConnection);
+	/**
+	 * Process on the server.
+	 * @param context
+	 * @param server
+	 * @param returnMessageQueue
+	 */
+	public void serverProcess(ApplicationContext context, GameServer server, Collection<ServerMessage> returnMessageQueue);
 	public int getPlayerId(); 
 }
